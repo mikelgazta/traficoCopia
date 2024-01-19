@@ -1,0 +1,19 @@
+<resources>
+    <!-- Strings Formulario de Registro y Login -->
+    <string name="app_name">TraficoAndroid</string>
+    <string name="formRegistro">Registro</string>
+    <string name="formLogin">Login</string>
+    <string name="registrado">Ya tienes cuenta? Inscribete.</string>
+    <string name="sinCuenta">No tienes cuenta? Registrate</string>
+    <string name="botonRegistro">Registrate</string>
+    <string name="botonLogin">Iniciar sesion</string>
+    <string name="nombreCompleto">Nombre y Apellidos</string>
+    <string name="email">Email</string>
+    <string name="numeroSS">Numero SS</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="confirmarContrasena">Confirmar Contraseña</string>
+    <string name="txt_cerrar_mapa">Cerrar Mapa</string>
+
+
+
+</resources>

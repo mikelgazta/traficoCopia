@@ -1,0 +1,67 @@
+version: "3.7"
+
+services:
+  # Servicio de base de datos
+  db:
+    image: mysql:5.7
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: trafico
+      MYSQL_DATABASE: trafico
+      MYSQL_USER: trafico
+      MYSQL_PASSWORD: trafico
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - mikel
+
+  # Servicio de phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 33306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8081:80
+    networks:
+      - mikel
+
+  # Servicio de la aplicación Laravel
+  apilaravel:
+    build: ./ApiLaravel
+    volumes:
+      - ./ApiLaravel:/src/app
+    depends_on:
+      - db
+    networks:
+      - mikel
+    ports:
+      - "8000:80"
+
+  # Servicio de la API de OpenData
+  # apiopendata:
+  #   build: ./ApiOpenData
+  #   volumes:
+  #     - ./ApiOpenData:/src/app
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - mikel
+  #   ports:
+  #     - "8001:80"
+
+  
+
+volumes:
+  dbdata:
+
+networks:
+  mikel:
+    driver: bridge

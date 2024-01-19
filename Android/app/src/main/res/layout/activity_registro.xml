@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/regImgLogo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:src="@drawable/googlemaps"
+        android:scaleType="centerInside"
+        android:layout_marginBottom="16dp" />
+
+
+    <TextView
+        android:id="@+id/regTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/formRegistro"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/regTxtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/edittext_border"
+        android:padding="12dp"
+        android:hint="@string/nombreCompleto" />
+
+    <EditText
+        android:id="@+id/regTxtEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/edittext_border"
+        android:padding="12dp"
+        android:hint="@string/email" />
+
+    <EditText
+        android:id="@+id/regTxtPwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/edittext_border"
+        android:padding="12dp"
+        android:hint="@string/contrasena"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/regTxtConfirmPwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/edittext_border"
+        android:padding="12dp"
+        android:hint="@string/confirmarContrasena"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/btnRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#3498DB"
+        android:padding="15dp"
+        android:text="@string/botonRegistro" />
+
+    <TextView
+        android:id="@+id/regLinkReg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:onClick="test"
+        android:text="@string/registrado"
+        android:textSize="20sp" />
+
+</LinearLayout>

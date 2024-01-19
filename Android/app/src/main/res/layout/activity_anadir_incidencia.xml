@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Navbar -->
+    <RelativeLayout
+        android:id="@+id/navbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#3498DB">
+
+        <!-- Icono Izquierdo -->
+        <ImageView
+            android:id="@+id/leftIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_back_arrow" />
+
+        <!-- Texto al lado del Icono -->
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/leftIcon"
+            android:text="Añadir Incidencia"
+            android:textColor="@color/white"
+            android:textSize="26sp" />
+
+        <!-- Icono de Logout en la esquina derecha -->
+        <ImageView
+            android:id="@+id/logoutIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_logout" />
+    </RelativeLayout>
+
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/tituloLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Título"
+        android:layout_below="@id/navbar"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"/>
+
+    <EditText
+        android:id="@+id/tituloEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tituloLabel"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edittext_border"
+        android:padding="8dp"
+        android:hint="Ingrese el título"/>
+
+    <!-- Descripción -->
+    <TextView
+        android:id="@+id/descripcionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descripción"
+        android:layout_below="@id/tituloEditText"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"/>
+
+    <EditText
+        android:id="@+id/descripcionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/descripcionLabel"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edittext_border"
+        android:padding="8dp"
+        android:hint="Ingrese la descripción"/>
+
+    <!-- Fecha y hora -->
+    <TextView
+        android:id="@+id/fechaHoraLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fecha y hora"
+        android:layout_below="@id/descripcionEditText"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"/>
+
+    <EditText
+        android:id="@+id/fechaHoraEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fechaHoraLabel"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edittext_border"
+        android:padding="8dp"
+        android:hint="Seleccionar fecha y hora"/>
+
+    <!-- Tipo -->
+    <TextView
+        android:id="@+id/tipoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tipo"
+        android:layout_below="@id/fechaHoraEditText"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"/>
+
+    <EditText
+        android:id="@+id/tipoEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tipoLabel"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edittext_border"
+        android:padding="8dp"
+        android:hint="Seleccionar tipo de incidente"/>
+
+    <!-- Sección para seleccionar una imagen o tomar una foto -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tipoEditText"
+        android:layout_marginTop="24dp">
+
+        <Button
+            android:id="@+id/seleccionarImagenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seleccionar Imagen"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/button_background"/>
+
+        <Button
+            android:id="@+id/tomarFotoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tomar Foto"
+            android:layout_below="@id/seleccionarImagenButton"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/button_background"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>
