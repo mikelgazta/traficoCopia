@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Navbar -->
+    <RelativeLayout
+        android:id="@+id/navbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#3498DB">
+
+        <!-- Icono Izquierdo -->
+        <ImageView
+            android:id="@+id/leftIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_back_arrow" />
+
+        <!-- Texto al lado del Icono -->
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/leftIcon"
+            android:text="Detalle de Incidencia"
+            android:textColor="@color/white"
+            android:textSize="26sp" />
+
+        <!-- Icono de Logout en la esquina derecha -->
+        <ImageView
+            android:id="@+id/logoutIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_logout" />
+    </RelativeLayout>
+
+    <!-- Main -->
+    <LinearLayout
+        android:layout_width="395dp"
+        android:layout_height="605dp"
+        android:layout_below="@id/navbar"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical">
+
+        <!-- Titulo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/navbar"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+
+            <!-- Título de la Incidencia -->
+            <TextView
+                android:id="@+id/tituloDetalle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Título de la Incidencia"
+                android:textSize="18sp" />
+
+            <!-- Icono de Estrella -->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_empty_star" />
+        </LinearLayout>
+
+
+        <!-- Descripción -->
+        <TextView
+            android:id="@+id/descripcionDetalle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Descripción de la Incidencia"
+            android:textSize="18sp" />
+
+        <!-- Fecha y hora -->
+        <TextView
+            android:id="@+id/fechaHoraDetalle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Fecha y Hora"
+            android:textSize="18sp" />
+
+        <!-- Tipo -->
+        <TextView
+            android:id="@+id/tipoDetalle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Tipo de Incidencia"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/imagenDetalle"
+            android:layout_width="match_parent"
+            android:layout_height="194dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_camera" />
+
+        <!-- Mapa -->
+        <FrameLayout
+            android:id="@+id/mapaFrame"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp">
+
+            <fragment
+                android:id="@+id/mapFragment"
+                android:name="tu.paquete.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="179dp" />
+        </FrameLayout>
+        <!-- Agrega más detalles según sea necesario -->
+
+    </LinearLayout>
+
+    <!-- Footer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/editarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:backgroundTint="#3498DB"
+            android:text="Editar" />
+
+        <Button
+            android:id="@+id/eliminarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:text="Eliminar" />
+
+    </LinearLayout>
+
+</RelativeLayout>
