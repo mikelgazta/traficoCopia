@@ -26,16 +26,19 @@ class LoginController extends Controller
         // Intento de inicio de sesión
         if (Auth::attempt($validatedData)) {
             $user = Auth::user();
-            $token = $user->createToken('TOKEN')->accessToken;
+            $token = $user->createToken('authToken')->accessToken;
+
+            //$user->update(['TOKEN' => $token]);
+
+            $user->TOKEN = $token;
+            $user->save();
 
 
             return response()->json([
                 'message' => 'Inicio de sesión exitoso',
                 'user' => $user,
-                //'access_token' => $token,
+                'access_token' => $token,
             ]);
-
-            //$user->update(['TOKEN' => $token]);
 
         } else {
             return response()->json(['error' => 'Credenciales inválidas'], 401);

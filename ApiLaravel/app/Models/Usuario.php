@@ -27,6 +27,7 @@ class Usuario extends Authenticatable
         'ID',
         'EMAIL',
         'CONTRASENA',
+        'TOKEN',
         'SN_ADMIN',
     ];
 
