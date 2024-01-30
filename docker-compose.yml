@@ -5,6 +5,7 @@ services:
   db:
     image: mysql:5.7
     container_name: db
+    hostname: trafico
     environment:
       MYSQL_ROOT_PASSWORD: trafico
       MYSQL_DATABASE: trafico

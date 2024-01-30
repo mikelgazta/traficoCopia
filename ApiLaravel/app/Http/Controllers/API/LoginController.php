@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -16,21 +17,30 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-    
-        if (Auth::attempt($credentials)) {
+        // Validación de los datos del formulario
+        $validatedData = $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        // Intento de inicio de sesión
+        if (Auth::attempt($validatedData)) {
             $user = Auth::user();
-            $token = $user->createToken('authToken')->accessToken;
-    
+            $token = $user->createToken('TOKEN')->accessToken;
+
+
             return response()->json([
+                'message' => 'Inicio de sesión exitoso',
                 'user' => $user,
-                'access_token' => $token,
+                //'access_token' => $token,
             ]);
+
+            //$user->update(['TOKEN' => $token]);
+
         } else {
-            return response()->json(['error' => 'Unauthenticated'], 401);
+            return response()->json(['error' => 'Credenciales inválidas'], 401);
         }
     }
-    
 
     /**
      * Cerrar sesión (revocar el token).

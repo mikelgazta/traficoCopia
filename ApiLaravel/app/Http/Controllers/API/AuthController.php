@@ -25,11 +25,12 @@ class AuthController extends Controller
         ]);
 
         // Generar token de acceso
-        $token = $user->createToken('authToken')->accessToken;
+        //$token = $user->createToken('authToken')->accessToken;
 
         return response()->json([
             'user' => $user,
-            'access_token' => $token,
+            //'access_token' => $token,
         ]);
     }
+
 }

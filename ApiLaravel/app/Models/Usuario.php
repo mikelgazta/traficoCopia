@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 class Usuario extends Authenticatable
 {
@@ -24,9 +24,9 @@ class Usuario extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'ID',
         'EMAIL',
         'CONTRASENA',
-        'TOKEN',
         'SN_ADMIN',
     ];
 
@@ -46,7 +46,12 @@ class Usuario extends Authenticatable
      */
     public $timestamps = false;
 
-    // Otros métodos y relaciones de tu modelo aquí...
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = true;
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

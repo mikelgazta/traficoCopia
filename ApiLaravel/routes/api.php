@@ -21,10 +21,26 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // Ejemplo de ruta para el registro utilizando el controlador AuthController
 Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
 
+// Ruta para iniciar sesión
+Route::post('/login', [App\Http\Controllers\API\LoginController::class, 'login']);
+
+// Rutas para obtener todas las incidencias
+Route::get('/listaIncidencias', [App\Http\Controllers\IncidenciaController::class, 'verIncidencias']);
+
+// Ruta para crear una nueva incidencia
+Route::post('/crearIncidencias', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
+
+// Ruta para obtener una incidencia específica por su ID
+Route::get('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'verIncidencia']);
+
+// Ruta para actualizar una incidencia específica por su ID
+Route::put('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'actualizarIncidencia']);
+
+// Ruta para eliminar una incidencia específica por su ID
+Route::delete('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'eliminarIncidencia']);
+
 Route::middleware('auth:api')->group(function () {
     // Rutas protegidas que requieren autenticación
-        // Ruta para iniciar sesión
-        Route::post('/login', [LoginController::class, 'login']);
 
         // Ruta para cerrar sesión
         Route::post('/logout', [LoginController::class, 'logout']);
