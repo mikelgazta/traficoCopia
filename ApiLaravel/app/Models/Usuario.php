@@ -36,9 +36,9 @@ class Usuario extends Authenticatable
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'SN_ADMIN' => 'boolean',
-    ];
+    // protected $casts = [
+    //     'SN_ADMIN' => 'boolean',
+    // ];
 
     /**
      * Indicates if the model should be timestamped.

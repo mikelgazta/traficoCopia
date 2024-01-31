@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Usuario;
 
 class LoginController extends Controller
 {
@@ -25,24 +26,33 @@ class LoginController extends Controller
 
         // Intento de inicio de sesión
         if (Auth::attempt($validatedData)) {
-            $user = Auth::user();
-            $token = $user->createToken('authToken')->accessToken;
+            if (Auth::check()) {
+                // El usuario está autenticado, procede con la actualización del token
+                $user = Auth::user();
+            
+            
+                // Actualiza el token y SN_ADMIN en la base de datos
+                $user->TOKEN = $user->createToken('authToken')->accessToken;
+                $user->SN_ADMIN = "S";
+                // Actualizar el token de acceso en la tabla USUARIOS
+                Usuario::where('ID', $user->ID)->update(['TOKEN' => $user->TOKEN]);
+                Usuario::where('ID', $user->ID)->update(['SN_ADMIN' => $user->SN_ADMIN]);
 
-            //$user->update(['TOKEN' => $token]);
-
-            $user->TOKEN = $token;
-            $user->save();
-
-
-            return response()->json([
-                'message' => 'Inicio de sesión exitoso',
-                'user' => $user,
-                'access_token' => $token,
-            ]);
-
-        } else {
-            return response()->json(['error' => 'Credenciales inválidas'], 401);
-        }
+                
+                if ($user->save()) {
+                    // Guardado con éxito
+                    return response()->json([
+                        'message' => 'Inicio de sesión exitoso',
+                        'user' => $user,
+                    ]);
+                } else {
+                    // Error al guardar
+                    return response()->json(['error' => 'Error al actualizar el usuario'], 500);
+                }
+            } else {
+                return response()->json(['error' => 'Usuario no autenticado'], 401);
+            }
+        }    
     }
 
     /**
