@@ -30,10 +30,23 @@ class LoginController extends Controller
                 // El usuario está autenticado, procede con la actualización del token
                 $user = Auth::user();
             
+
+                // Obtener el dominio del correo electrónico
+                $emailParts = explode('@', $user->EMAIL);
+                $domain = end($emailParts);
+
+                // Verificar si el dominio es "plaiaundi.com"
+                if ($domain === 'plaiaundi.com') {
+                    $user->SN_ADMIN = 'S';
+                } else {
+                    $user->SN_ADMIN = 'N';
+                }
             
                 // Actualiza el token y SN_ADMIN en la base de datos
                 $user->TOKEN = $user->createToken('authToken')->accessToken;
-                $user->SN_ADMIN = "S";
+                
+                //$user->SN_ADMIN = "S";
+                
                 // Actualizar el token de acceso en la tabla USUARIOS
                 Usuario::where('ID', $user->ID)->update(['TOKEN' => $user->TOKEN]);
                 Usuario::where('ID', $user->ID)->update(['SN_ADMIN' => $user->SN_ADMIN]);
