@@ -28,7 +28,7 @@ Route::post('/login', [App\Http\Controllers\API\LoginController::class, 'login']
 Route::get('/listaIncidencias', [App\Http\Controllers\IncidenciaController::class, 'verIncidencias']);
 
 // Ruta para crear una nueva incidencia
-Route::post('/crearIncidencias', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
+Route::post('/crearIncidencia', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
 
 // Ruta para obtener una incidencia específica por su ID
 Route::get('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'verIncidencia']);
