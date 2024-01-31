@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CameraController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,35 +15,37 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Rutas que no requieren autenticación
 
-// Ejemplo de ruta para el registro utilizando el controlador AuthController
+// Ruta para registro
 Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
 
 // Ruta para iniciar sesión
-Route::post('/login', [App\Http\Controllers\API\LoginController::class, 'login']);
+Route::post('/login', [App\Http\Controllers\API\LoginController::class, 'login'])->name('login');
 
-// Rutas para obtener todas las incidencias
-Route::get('/listaIncidencias', [App\Http\Controllers\IncidenciaController::class, 'verIncidencias']);
+// Ruta para cerrar sesión
+Route::post('/logout', [App\Http\Controllers\API\LoginController::class, 'logout']);
 
-// Ruta para crear una nueva incidencia
-Route::post('/crearIncidencia', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
-
-// Ruta para obtener una incidencia específica por su ID
-Route::get('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'verIncidencia']);
-
-// Ruta para actualizar una incidencia específica por su ID
-Route::put('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'actualizarIncidencia']);
-
-// Ruta para eliminar una incidencia específica por su ID
-Route::delete('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'eliminarIncidencia']);
-
+// Rutas protegidas que requieren autenticación con token
 Route::middleware('auth:api')->group(function () {
-    // Rutas protegidas que requieren autenticación
 
-        // Ruta para cerrar sesión
-        Route::post('/logout', [LoginController::class, 'logout']);
+    // Rutas para las cámaras
+    Route::get('/listaCamaras', [CameraController::class, 'verCamaras']);
+    Route::post('/crearCamaras', [CameraController::class, 'crearCamara']);
+    Route::get('/camaras/{id}', [CameraController::class, 'verCamara']);
+    Route::put('/camaras/{id}', [CameraController::class, 'actualizarCamara']);
+    Route::delete('/camaras/{id}', [CameraController::class, 'eliminarCamara']);
+
+    // Rutas para las incidencias
+    Route::get('/listaIncidencias', [App\Http\Controllers\IncidenciaController::class, 'verIncidencias']);
+    Route::post('/crearIncidencia', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
+    Route::get('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'verIncidencia']);
+    Route::put('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'actualizarIncidencia']);
+    Route::delete('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'eliminarIncidencia']);
 });
 
+
+// Ruta para obtener información del usuario autenticado
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
