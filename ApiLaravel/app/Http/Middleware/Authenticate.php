@@ -2,26 +2,27 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Closure;
+use Illuminate\Support\Facades\Auth;
 
-class Authenticate extends Middleware
+class Authenticate
 {
-    /**
-     * Get the path the user should be redirected to when they are not authenticated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string|null
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException
-     */
-    protected function redirectTo($request)
+    public function handle($request, Closure $next)
     {
-        if ($request->expectsJson()) {
-            throw new UnauthorizedHttpException('Bearer');
+        // Verificar si el token de autorización está presente en la solicitud
+        if (!$request->header('Authorization')) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        throw new UnauthorizedHttpException('Bearer', 'Unauthenticated.');
+        // Obtener el token de autorización de la solicitud
+        $token = $request->header('Authorization');
+
+        // Intentar autenticar al usuario utilizando el token
+        if (!Auth::onceUsingId($token)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Si la autenticación es exitosa, permitir que la solicitud continúe hacia el controlador
+        return $next($request);
     }
 }

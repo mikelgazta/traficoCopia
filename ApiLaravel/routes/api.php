@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CameraController;
+use App\Http\Controllers\IncidenciaController;
+use App\Http\Middleware\CorsMiddleware;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +29,16 @@ Route::post('/login', [App\Http\Controllers\API\LoginController::class, 'login']
 // Ruta para cerrar sesión
 Route::post('/logout', [App\Http\Controllers\API\LoginController::class, 'logout']);
 
+//Route::middleware('cors')->get('/listaIncidencias', 'IncidenciaController@verIncidencias');
+
+Route::get('/listaIncidencias', [IncidenciaController::class, 'verIncidencias'])->middleware('auth');
+    // Rutas para las incidencias
+    //Route::get('/listaIncidencias', [App\Http\Controllers\IncidenciaController::class, 'verIncidencias']);
+    Route::post('/crearIncidencia', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
+    Route::get('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'verIncidencia']);
+    Route::put('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'actualizarIncidencia']);
+    Route::delete('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'eliminarIncidencia']);
+
 // Rutas protegidas que requieren autenticación con token
 Route::middleware('auth:api')->group(function () {
 
@@ -36,12 +49,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/camaras/{id}', [CameraController::class, 'actualizarCamara']);
     Route::delete('/camaras/{id}', [CameraController::class, 'eliminarCamara']);
 
-    // Rutas para las incidencias
-    Route::get('/listaIncidencias', [App\Http\Controllers\IncidenciaController::class, 'verIncidencias']);
-    Route::post('/crearIncidencia', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
-    Route::get('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'verIncidencia']);
-    Route::put('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'actualizarIncidencia']);
-    Route::delete('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'eliminarIncidencia']);
+
 });
 
 

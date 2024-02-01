@@ -1,18 +1,24 @@
 import React from 'react';
-import './navbar.css';
+import './Navbar.css';
 
-const Navbar = ({ currentUser }) => {
+const Navbar = ({ currentUser, navigateTo }) => {
   return (
     <nav className="navbar">
       <ul className="navbar-nav">
         <li className="nav-item">
-          <a href="#" className="nav-link">Dashboard</a>
+          <a href="#" className="nav-link" onClick={() => navigateTo('dashboard')}>
+            Dashboard
+          </a>
         </li>
         <li className="nav-item">
-          <a href="#" className="nav-link">Crear Incidencia</a>
+          <a href="#" className="nav-link" onClick={() => navigateTo('incidentForm')}>
+            Crear Incidencia
+          </a>
         </li>
         <li className="nav-item">
-          <a href="#" className="nav-link">Settings</a>
+          <a href="#" className="nav-link" onClick={() => navigateTo('settings')}>
+            Settings
+          </a>
         </li>
       </ul>
       <div className="user-info">

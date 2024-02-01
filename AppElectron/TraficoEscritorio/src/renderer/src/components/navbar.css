@@ -1,25 +1,30 @@
+/* Navbar.css */
+
 .navbar {
-    background-color: #333;
-    color: #fff;
-  }
-  
-  .navbar-nav {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .nav-item {
-    display: inline-block;
-    margin-right: 10px;
-  }
-  
-  .nav-link {
-    color: #fff;
-    text-decoration: none;
-  }
-  
-  .user-info {
-    float: right;
-  }
-  
+  display: flex;
+  justify-content: space-between; /* Alinea los elementos al inicio y al final */
+  align-items: center; /* Centra verticalmente los elementos */
+  padding: 20px;
+  background-color: #3498DB;
+  color: #fff;
+}
+
+.navbar-nav {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex; /* Utiliza Flexbox */
+}
+
+.nav-item {
+  margin-right: 10px;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.user-info {
+  color: #fff;
+}

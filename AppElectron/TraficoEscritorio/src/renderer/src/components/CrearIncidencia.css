@@ -1,0 +1,16 @@
+.crear-incidencia-container {
+    display: flex;
+    height: 100vh; /* Establece la altura total de la ventana */
+  }
+  
+  .side-menu-container {
+    flex: 1; /* El SideMenu ocupa todo el espacio vertical disponible */
+  }
+  
+  .incident-form-container {
+    flex: 3; /* El IncidentForm ocupa todo el espacio vertical disponible */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente el contenido */
+    align-items: center; /* Centra verticalmente el contenido */
+  }
+  
