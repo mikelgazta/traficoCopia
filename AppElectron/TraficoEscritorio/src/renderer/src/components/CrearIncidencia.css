@@ -1,16 +1,27 @@
 .crear-incidencia-container {
-    display: flex;
-    height: 100vh; /* Establece la altura total de la ventana */
-  }
-  
-  .side-menu-container {
-    flex: 1; /* El SideMenu ocupa todo el espacio vertical disponible */
-  }
-  
-  .incident-form-container {
-    flex: 3; /* El IncidentForm ocupa todo el espacio vertical disponible */
-    display: flex;
-    justify-content: center; /* Centra horizontalmente el contenido */
-    align-items: center; /* Centra verticalmente el contenido */
-  }
-  
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Establece la altura total de la ventana */
+}
+
+.navbar-container {
+  flex: 0 0 auto; /* El navbar no crecerá y se ajustará automáticamente a su contenido */
+  background-color: #333; /* Color de fondo del navbar */
+}
+
+.main-container {
+  display: flex;
+  flex: 1; /* El contenido principal ocupará todo el espacio vertical disponible */
+}
+
+.side-menu-container {
+  flex: 0 0 250px; /* Ancho fijo para el side menu */
+  background-color: #f0f0f0; /* Color de fondo opcional para el side menu */
+}
+
+.incident-form-container {
+  flex: 1; /* El IncidentForm ocupará el resto del espacio disponible */
+  display: flex;
+  justify-content: center; /* Centra horizontalmente el contenido */
+  align-items: center; /* Centra verticalmente el contenido */
+}

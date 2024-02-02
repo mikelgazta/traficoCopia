@@ -19,38 +19,28 @@ use App\Http\Middleware\CorsMiddleware;
 */
 
 // Rutas que no requieren autenticación
+Route::middleware([CorsMiddleware::class])->group(function () {
+    // Rutas que no requieren autenticación ni CORS
+    Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+    Route::post('/login', [App\Http\Controllers\API\LoginController::class, 'login'])->name('login');
+    Route::post('/logout', [App\Http\Controllers\API\LoginController::class, 'logout']);
 
-// Ruta para registro
-Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+    Route::middleware('auth:api')->group(function () {
+        // Rutas que requieren autenticación y CORS
+        Route::get('/listaIncidencias', [IncidenciaController::class, 'verIncidencias']);
+        Route::post('/crearIncidencia', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
+        Route::get('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'verIncidencia']);
+        Route::put('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'actualizarIncidencia']);
+        Route::delete('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'eliminarIncidencia']);
 
-// Ruta para iniciar sesión
-Route::post('/login', [App\Http\Controllers\API\LoginController::class, 'login'])->name('login');
-
-// Ruta para cerrar sesión
-Route::post('/logout', [App\Http\Controllers\API\LoginController::class, 'logout']);
-
-//Route::middleware('cors')->get('/listaIncidencias', 'IncidenciaController@verIncidencias');
-
-Route::get('/listaIncidencias', [IncidenciaController::class, 'verIncidencias'])->middleware('auth');
-    // Rutas para las incidencias
-    //Route::get('/listaIncidencias', [App\Http\Controllers\IncidenciaController::class, 'verIncidencias']);
-    Route::post('/crearIncidencia', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
-    Route::get('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'verIncidencia']);
-    Route::put('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'actualizarIncidencia']);
-    Route::delete('/incidencias/{id}', [App\Http\Controllers\IncidenciaController::class, 'eliminarIncidencia']);
-
-// Rutas protegidas que requieren autenticación con token
-Route::middleware('auth:api')->group(function () {
-
-    // Rutas para las cámaras
-    Route::get('/listaCamaras', [CameraController::class, 'verCamaras']);
-    Route::post('/crearCamaras', [CameraController::class, 'crearCamara']);
-    Route::get('/camaras/{id}', [CameraController::class, 'verCamara']);
-    Route::put('/camaras/{id}', [CameraController::class, 'actualizarCamara']);
-    Route::delete('/camaras/{id}', [CameraController::class, 'eliminarCamara']);
-
-
+        Route::get('/listaCamaras', [CameraController::class, 'verCamaras']);
+        Route::post('/crearCamaras', [CameraController::class, 'crearCamara']);
+        Route::get('/camaras/{id}', [CameraController::class, 'verCamara']);
+        Route::put('/camaras/{id}', [CameraController::class, 'actualizarCamara']);
+        Route::delete('/camaras/{id}', [CameraController::class, 'eliminarCamara']);
+    });
 });
+
 
 
 // Ruta para obtener información del usuario autenticado
