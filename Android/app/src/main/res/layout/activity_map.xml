@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Mapa -->
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer" />
+
+    <!-- Footer con botones e iconos -->
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:padding="16dp">
+
+        <!-- Botón 1 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/border_background">
+
+            <ImageView
+                android:layout_marginTop="2dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_smile"
+                android:contentDescription="Smile Icon"/>
+
+            <Button
+                android:id="@+id/crearIncidencia"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:text="Crear Incidencia"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <!-- Botón 2 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/border_background">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_full_star"
+                android:contentDescription="Star Icon"/>
+
+            <Button
+                android:id="@+id/verFavoritos"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:text="Ver Favoritos"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <!-- Botón 3 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/border_background">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_camera"
+                android:contentDescription="Camera Icon"/>
+
+            <Button
+                android:id="@+id/verCamaras"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:text="Ver Cámaras"
+                android:textColor="@color/black" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

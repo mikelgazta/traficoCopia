@@ -54,7 +54,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['database','single'],
             'ignore_exceptions' => false,
         ],
 
@@ -64,7 +64,11 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
-
+        'database' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/database.log'), // Ruta al archivo de log específico para los errores de base de datos
+            'level' => 'error', // Establece el nivel de logging a 'error' para registrar solo errores de base de datos
+        ],
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

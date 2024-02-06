@@ -1,61 +1,77 @@
 package com.example.traficoandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends AppCompatActivity implements OnMapReadyCallback {
 
-    private MapView mapView;
-    private GoogleMap googleMap;
+    private MapView mMapView;
+    private GoogleMap mGoogleMap;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_map);
 
-        mapView = view.findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        mapView.onResume();
-        mapView.getMapAsync(this);
-
-        return view;
+        mMapView = findViewById(R.id.mapFragment);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this);
     }
 
     @Override
-    public void onMapReady(GoogleMap map) {
-        googleMap = map;
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
 
-        // Obtener los argumentos
-        Bundle args = getArguments();
-        if (args != null) {
-            String lat = args.getString("LATITUDE", "0");
-            String lon = args.getString("LONGITUDE", "0");
+        // Configura el listener de clics en el mapa
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                openAddIncidentActivity(latLng.latitude, latLng.longitude);
+            }
+        });
+    }
 
-            // Convertir las coordenadas a double
-            double latitude = Double.parseDouble(lat);
-            double longitude = Double.parseDouble(lon);
+    private void openAddIncidentActivity(double latitude, double longitude) {
+        Intent intent = new Intent(this, AddIncidentActivity.class);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        startActivity(intent);
+    }
 
-            // Crear LatLng y posicionar la cámara
-            LatLng location = new LatLng(latitude, longitude);
-            googleMap.addMarker(new MarkerOptions().position(location).title("Ubicación"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-        } else {
-            // Manejar el caso en el que no se proporcionaron coordenadas
-            Toast.makeText(getContext(), "No se proporcionaron coordenadas.", Toast.LENGTH_SHORT).show();
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
     }
 }

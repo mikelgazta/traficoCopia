@@ -14,6 +14,11 @@
     <string name="confirmarContrasena">Confirmar Contraseña</string>
     <string name="txt_cerrar_mapa">Cerrar Mapa</string>
 
-
-
+    <!-- Define las opciones del Spinner -->
+    <string-array name="tipos_incidente">
+        <item>Accidente</item>
+        <item>Robo</item>
+        <item>Inundación</item>
+        <!-- Agrega más tipos de incidentes aquí según sea necesario -->
+    </string-array>
 </resources>

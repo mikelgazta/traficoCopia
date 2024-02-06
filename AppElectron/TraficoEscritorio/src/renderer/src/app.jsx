@@ -1,60 +1,123 @@
-// app.js
 import React, { useState, useEffect } from 'react';
-import BarChart from './BarChart';
+import Navbar from './components/Navbar';
+import './components/App.css';
+import CrearIncidencia from './components/CrearIncidencia';
 
-const App = () => {
-  const [tipoInforme, setTipoInforme] = useState('incidencias');
-  const [datosIncidencias, setDatosIncidencias] = useState([]);
+function App() {
+  const [currentComponent, setCurrentComponent] = useState('dashboard');
+  const [incidents, setIncidents] = useState([]);
+  const [token, setToken] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Función para cambiar el tipo de informe
-  const cambiarTipoInforme = (nuevoTipo) => {
-    setTipoInforme(nuevoTipo);
+  const navigateTo = (component) => {
+    setCurrentComponent(component);
   };
 
-  // Función para obtener datos de incidencias desde la API
-  const obtenerDatosIncidencias = async () => {
-    try {
-      const response = await fetch('https://opendata.euskadi.eus/api-traffic/?api=traffic');
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error al obtener datos de la API:', error);
-      return [];
+  useEffect(() => {
+    const login = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: 'mikelgazta@plaiaundi.com',
+            password: '123456',
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al iniciar sesión');
+        }
+
+        const data = await response.json();
+        setToken(data.token);
+        setLoading(false);
+
+        setToken(data.user.TOKEN);
+      
+      } catch (error) {
+        setError('Error al iniciar sesión: ' + error.message);
+        setLoading(false);
+      }
+    };
+
+    login();
+  }, []); 
+
+  const renderComponent = () => {
+    if (loading) {
+      return <p>Cargando...</p>;
+    }
+
+    if (error) {
+      return <p>{error}</p>;
+    }
+
+  // Llamada a la API para obtener las incidencias
+  useEffect(() => {
+    const fetchIncidents = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/listaIncidencias', {
+          headers: {
+            Authorization: token,
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Error al obtener las incidencias');
+        }
+        const data = await response.json();
+        setIncidents(data);
+      } catch (error) {
+        console.error('Error al obtener las incidencias:', error);
+      }
+    };
+
+    if (token) {
+       fetchIncidents();
+     }
+  }, [token]); // Esta función se ejecutará cuando el token cambie
+  
+    switch (currentComponent) {
+      case 'dashboard':
+        return (
+          <div>
+            <Navbar currentUser="Usuario Ejemplo" navigateTo={navigateTo} />
+            <h2>Dashboard</h2>
+            <ul>
+              {incidents.map((incident) => (
+                <li key={incident.ID}>
+                  <h3>{incident.TIPO}</h3>
+                  <p>{incident.CAUSA}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      case 'incidentForm':
+        return <CrearIncidencia />;
+      case 'settings':
+        return (
+          <div>
+            {/* Contenido de la configuración */}
+          </div>
+        );
+      default:
+        return (
+          <div>
+            <p>Página no encontrada</p>
+          </div>
+        );
     }
   };
 
-  // Obtén los datos de incidencias al cargar el componente
-  useEffect(() => {
-    const obtenerDatos = async () => {
-      const datos = await obtenerDatosIncidencias();
-      setDatosIncidencias(datos);
-    };
-
-    obtenerDatos();
-  }, []); // El segundo argumento [] asegura que se ejecute solo una vez al montar el componente
-
   return (
-    <div>
-      <h1>Tu Aplicación de Informes</h1>
-      <button onClick={() => cambiarTipoInforme('incidencias')}>Incidencias</button>
-      <button onClick={() => cambiarTipoInforme('otrosTiposDeInforme')}>Otros Tipos</button>
-
-      {tipoInforme === 'incidencias' && (
-        <BarChart
-          data={datosIncidencias}
-          color={['#3498db']}
-          height={300}
-          width={600}
-          cornerRadius={5}
-        />
-      )}
-
-      {tipoInforme === 'otrosTiposDeInforme' && (
-        <div>Otros Tipos de Informe</div>
-      )}
+    <div className="container">
+      {renderComponent()}
     </div>
   );
-};
-
+}
 
 export default App;

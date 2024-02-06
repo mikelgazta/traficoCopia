@@ -1,51 +1,32 @@
 package com.example.traficoandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 public class MapActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        // Establece el diseño de la actividad a partir del archivo XML activity_map
+        setContentView(R.layout.activity_map);
 
-        Button buttonMap = findViewById(R.id.buttonMap);
-        buttonMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showMapFragment();
-            }
-        });
+        // Configura el listener para el layout footer
+        setupClickListener();
     }
 
-    private void showMapFragment() {
-        EditText latText = findViewById(R.id.latText);
-        EditText longText = findViewById(R.id.longText);
+    // Método para configurar el listener del layout footer
+    private void setupClickListener() {
+        LinearLayout layout = findViewById(R.id.footer); // Obtiene una referencia al layout footer
+        layout.setOnClickListener(v -> navigateToMapFragment()); // Asigna un listener al layout para la navegación al fragmento de mapa
+    }
 
-        String lat = latText.getText().toString();
-        String lon = longText.getText().toString();
-
-        // Create a new instance of MapFragment and pass lat/lon as arguments
-        MapFragment mapFragment = new MapFragment();
-        Bundle args = new Bundle();
-        args.putString("LATITUDE", lat);
-        args.putString("LONGITUDE", lon);
-        mapFragment.setArguments(args);
-
-        // Show the MapFragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.mapContainer, mapFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
-        // Make the map container visible
-        findViewById(R.id.mapContainer).setVisibility(View.VISIBLE);
+    // Método para navegar al fragmento de mapa (MapFragment)
+    private void navigateToMapFragment() {
+        Intent intent = new Intent(this, MapFragment.class); // Crea un intent para iniciar la actividad MapFragment
+        startActivity(intent); // Inicia la actividad MapFragment
     }
 }
