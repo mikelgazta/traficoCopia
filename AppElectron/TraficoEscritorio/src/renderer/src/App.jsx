@@ -34,7 +34,8 @@ function App() {
         }
 
         const data = await response.json();
-        setToken(data.token);
+        setToken(data.user.TOKEN);
+      
       } catch (error) {
         console.error('Error al iniciar sesión:', error);
       }
@@ -49,7 +50,7 @@ function App() {
       try {
         const response = await fetch('http://127.0.0.1:8000/api/listaIncidencias', {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: token,
           },
         });
         if (!response.ok) {
@@ -63,8 +64,8 @@ function App() {
     };
 
     if (token) {
-      fetchIncidents();
-    }
+       fetchIncidents();
+     }
   }, [token]); // Esta función se ejecutará cuando el token cambie
 
   // Renderiza el componente adecuado en función del estado currentComponent
