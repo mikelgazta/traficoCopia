@@ -206,31 +206,32 @@
 
     <!-- Sección para seleccionar una imagen o tomar una foto -->
     <LinearLayout
-        android:layout_width="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/direccionEditText"
+    android:layout_marginTop="24dp"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/seleccionarImagenButton"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:layout_below="@id/direccionEditText"
-        android:layout_marginTop="24dp"
-        android:orientation="horizontal">
+        android:text="Seleccionar Imagen"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"/>
 
-        <Button
-            android:id="@+id/seleccionarImagenButton"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Seleccionar Imagen"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"/>
+    <Button
+        android:id="@+id/tomarFotoButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Tomar Foto"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"  />
 
-        <Button
-            android:id="@+id/tomarFotoButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tomar Foto"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"  />
+</LinearLayout>
 
-    </LinearLayout>
 
     <!-- Footer -->
     <LinearLayout
@@ -252,8 +253,15 @@
             android:textColor="@color/black"
             app:strokeColor="@color/black"
             app:strokeWidth="@dimen/cardview_compat_inset_shadow" />
-
-
+        <Button
+            android:id="@+id/guardarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:backgroundTint="#3498DB"
+            android:text="Guardar" />
         <Button
             android:id="@+id/guardarButton"
             android:layout_width="0dp"
@@ -266,4 +274,3 @@
     </LinearLayout>
 
 </RelativeLayout>
-

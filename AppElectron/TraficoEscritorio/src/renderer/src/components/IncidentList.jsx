@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import IncidentList from './IncidentList';
 
-function IncidentList() {
+function App() {
   const [incidents, setIncidents] = useState([]);
   const [token, setToken] = useState('');
 
@@ -34,7 +34,6 @@ function IncidentList() {
             Authorization: `Bearer ${token}`,
           },
         });
-
         setIncidents(response.data);
       } catch (error) {
         console.error('Error al obtener las incidencias:', error);
@@ -53,4 +52,4 @@ function IncidentList() {
   );
 }
 
-export default IncidentList;
+export default App;

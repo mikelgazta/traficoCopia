@@ -19,7 +19,9 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
+    }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_map, container, false);
         mMapView = findViewById(R.id.mapFragment);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
