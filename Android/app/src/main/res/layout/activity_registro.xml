@@ -25,15 +25,6 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/regTxtName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/edittext_border"
-        android:padding="12dp"
-        android:hint="@string/nombreCompleto" />
-
-    <EditText
         android:id="@+id/regTxtEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

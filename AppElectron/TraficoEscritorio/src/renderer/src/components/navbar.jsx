@@ -12,7 +12,7 @@ const Navbar = ({ currentUser, navigateTo }) => {
         </li>
         <li className="nav-item">
           <a href="#" className="nav-link" onClick={() => navigateTo('incidentForm')}>
-            Crear Incidencia
+            Incidencias
           </a>
         </li>
         <li className="nav-item">

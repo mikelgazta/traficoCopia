@@ -84,7 +84,7 @@
                 android:layout_height="64dp"
                 android:layout_marginStart="16dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/placeholder_image" />
+                android:src="@drawable/ic_camera" />
 
         </LinearLayout>
     </RelativeLayout>

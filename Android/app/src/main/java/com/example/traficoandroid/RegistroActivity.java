@@ -25,7 +25,6 @@ import okhttp3.Response;
 public class RegistroActivity extends AppCompatActivity {
 
     // Declaración de variables de vistas y objetos necesarios
-    private EditText nombreEditText;
     private EditText emailEditText;
     private EditText passwordEditText;
     private EditText confirmarPasswordEditText;
@@ -44,7 +43,6 @@ public class RegistroActivity extends AppCompatActivity {
 
     // Método para inicializar las vistas
     private void initializeViews() {
-        nombreEditText = findViewById(R.id.regTxtName);
         emailEditText = findViewById(R.id.regTxtEmail);
         passwordEditText = findViewById(R.id.regTxtPwd);
         confirmarPasswordEditText = findViewById(R.id.regTxtConfirmPwd);
@@ -71,13 +69,12 @@ public class RegistroActivity extends AppCompatActivity {
     // Método para registrar al usuario
     private void registerUser() {
         // Obtener los datos ingresados por el usuario
-        final String nombre = nombreEditText.getText().toString();
         final String email = emailEditText.getText().toString();
         final String password = passwordEditText.getText().toString();
         final String confirmarPassword = confirmarPasswordEditText.getText().toString();
 
         // Validar que todos los campos estén completos
-        if (nombre.isEmpty() || email.isEmpty() || password.isEmpty() || confirmarPassword.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || confirmarPassword.isEmpty()) {
             showAlert("Error", "Por favor, complete todos los campos.");
             return;
         }

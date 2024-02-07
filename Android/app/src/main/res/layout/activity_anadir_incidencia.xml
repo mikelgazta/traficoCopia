@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:text="Título"
         android:layout_below="@id/navbar"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"/>
 
     <EditText
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:text="Descripción"
         android:layout_below="@id/tituloEditText"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"/>
 
     <EditText
@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:text="Fecha y hora"
         android:layout_below="@id/causaEditText"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"/>
 
     <EditText
@@ -120,7 +120,7 @@
         android:layout_height="wrap_content"
         android:text="Nivel de Incidencia"
         android:layout_below="@id/comienzoEditText"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"/>
 
     <EditText
@@ -142,7 +142,7 @@
         android:layout_height="wrap_content"
         android:text="Carretera"
         android:layout_below="@id/nvlIncidenciaEditText"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"/>
 
     <EditText
@@ -164,7 +164,7 @@
         android:layout_height="wrap_content"
         android:text="Dirección"
         android:layout_below="@id/carreteraEditText"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"/>
 
     <EditText
@@ -208,8 +208,8 @@
     <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/direccionEditText"
-    android:layout_marginTop="24dp"
+    android:layout_below="@id/tipoSpinner"
+    android:layout_marginTop="10dp"
     android:orientation="horizontal">
 
     <Button
@@ -262,15 +262,5 @@
             android:layout_weight="1"
             android:backgroundTint="#3498DB"
             android:text="Guardar" />
-        <Button
-            android:id="@+id/guardarButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:backgroundTint="#3498DB"
-            android:text="Guardar" />
     </LinearLayout>
-
 </RelativeLayout>

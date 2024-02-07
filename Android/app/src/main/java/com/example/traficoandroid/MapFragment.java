@@ -2,7 +2,12 @@ package com.example.traficoandroid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -25,6 +30,7 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
         mMapView = findViewById(R.id.mapFragment);
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
+        return view;
     }
 
     @Override

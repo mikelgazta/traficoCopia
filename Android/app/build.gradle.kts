@@ -40,6 +40,5 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation ("com.squareup.okhttp3:okhttp:4.9.1")
     implementation ("com.google.code.gson:gson:2.8.8")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
 
 }

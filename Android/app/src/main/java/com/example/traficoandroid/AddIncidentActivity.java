@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +28,7 @@ import okhttp3.Response;
 
 public class AddIncidentActivity extends AppCompatActivity {
 
-    private EditText tipoEditText;
+    private Spinner tipoSpinner;
     private EditText causaEditText;
     private EditText comienzoEditText;
     private EditText nvlIncidenciaEditText;
@@ -49,7 +50,7 @@ public class AddIncidentActivity extends AppCompatActivity {
         }
 
         // Inicializar vistas
-        tipoEditText = findViewById(R.id.tipoEditText);
+        tipoSpinner = findViewById(R.id.tipoSpinner);
         causaEditText = findViewById(R.id.causaEditText);
         comienzoEditText = findViewById(R.id.comienzoEditText);
         nvlIncidenciaEditText = findViewById(R.id.nvlIncidenciaEditText);
@@ -68,7 +69,7 @@ public class AddIncidentActivity extends AppCompatActivity {
 
     private void enviarDatos() {
         // Obtener valores de los campos de texto
-        String tipo = tipoEditText.getText().toString();
+        String tipo = tipoSpinner.getSelectedItem().toString();
         String causa = causaEditText.getText().toString();
         String comienzo = comienzoEditText.getText().toString();
         String nvlIncidencia = nvlIncidenciaEditText.getText().toString();
