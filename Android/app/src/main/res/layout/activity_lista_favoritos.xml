@@ -29,7 +29,7 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@id/leftIcon"
-            android:text="Lista de Cámaras"
+            android:text="Lista de Favoritos"
             android:textColor="@color/white"
             android:textSize="22sp" />
 
@@ -44,7 +44,7 @@
             android:src="@drawable/ic_logout" />
     </RelativeLayout>
 
-    <!-- RelativeLayout para la lista de cámaras -->
+    <!-- RelativeLayout para la lista de incidencias -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,28 +63,29 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tituloCamara"
+                    android:id="@+id/tituloFavorito"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Título de la Cámara"
+                    android:text="Título de la Incidencia"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/fechaCamara"
+                    android:id="@+id/descripcionFavorito"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Fecha de la Cámara"
+                    android:text="Descripcion de la incidencia favorita"
                     android:textSize="14sp" />
             </LinearLayout>
 
+            <!-- Aquí reemplaza la ImageView con el icono ic_full_star -->
             <ImageView
-                android:id="@+id/imagenCamara"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:id="@+id/iconoEstrella"
+                android:layout_width="53dp"
+                android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_camera" />
+                android:src="@drawable/ic_full_star" />
 
         </LinearLayout>
     </RelativeLayout>
