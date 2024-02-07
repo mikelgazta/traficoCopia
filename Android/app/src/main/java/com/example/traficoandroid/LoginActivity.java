@@ -2,6 +2,7 @@ package com.example.traficoandroid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,9 +11,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -25,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
 
-    // Método onCreate() llamado cuando se crea la actividad.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,61 +41,49 @@ public class LoginActivity extends AppCompatActivity {
         setupListeners();
     }
 
-    // Método para inicializar las vistas (encontrar las vistas en el diseño y asignarlas a variables).
     private void initializeViews() {
         emailEditText = findViewById(R.id.loginTxtEmail);
         passwordEditText = findViewById(R.id.loginTxtPwd);
     }
 
-    // Método para configurar los listeners para los elementos de la interfaz de usuario.
     private void setupListeners() {
         Button loginButton = findViewById(R.id.loginBtnLogin);
         TextView registerTextView = findViewById(R.id.loginLinkLogin);
 
-        // Listener para el enlace de registro que abre la actividad de registro cuando se hace clic.
         registerTextView.setOnClickListener(view -> navigateToRegister());
 
-        // Listener para el botón de inicio de sesión que llama al método loginUser() cuando se hace clic.
         loginButton.setOnClickListener(v -> loginUser());
     }
 
-    // Método para navegar a la actividad de registro.
     private void navigateToRegister() {
         Intent intent = new Intent(this, RegistroActivity.class);
         startActivity(intent);
     }
 
-    // Método para realizar el inicio de sesión del usuario.
     private void loginUser() {
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        // Verificar si los campos de correo electrónico y contraseña están vacíos.
         if (email.isEmpty() || password.isEmpty()) {
-            showAlert("Error", "Email y password son requeridos"); // Mostrar un mensaje de error si están vacíos.
+            showAlert("Error", "Email y password son requeridos");
             return;
         }
 
-        // Crear un objeto CredencialesLogin con el correo electrónico y la contraseña.
-        CredencialesLogin credenciales = new CredencialesLogin(email, password);
-        // Convertir el objeto CredencialesLogin a JSON.
-        String jsonCredenciales = gson.toJson(credenciales);
-        // Crear el cuerpo de la solicitud HTTP con el JSON.
-        RequestBody body = RequestBody.create(jsonCredenciales, MediaType.parse("application/json; charset=utf-8"));
+        MediaType mediaType = MediaType.parse("application/json");
+        String json = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}";
+        RequestBody body = RequestBody.create(json, mediaType);
 
-        // Construir la solicitud HTTP POST con la URL de inicio de sesión y el cuerpo de la solicitud.
         Request request = new Request.Builder()
-                .url("http://127.0.0.1:8000/api/login")
+                .url("http://10.0.2.2:8000/api/login")
                 .post(body)
                 .build();
 
-        // Enviar la solicitud HTTP asíncronamente y manejar las respuestas en los métodos de Callback.
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                showAlert("Error", e.getMessage()); // Mostrar un mensaje de error en caso de fallo.
+                showAlert("Error", e.getMessage());
             }
-            //Metodos para manejar las respuestas del servidor
+
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseBody = response.body().string();
@@ -102,7 +96,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // Método para mostrar un cuadro de diálogo con un título y un mensaje.
     private void showAlert(final String title, final String message) {
         runOnUiThread(() -> new AlertDialog.Builder(LoginActivity.this)
                 .setTitle(title)
@@ -112,27 +105,34 @@ public class LoginActivity extends AppCompatActivity {
                 .show());
     }
 
-    // Método para manejar el inicio de sesión exitoso.
     private void handleLoginSuccess(String responseBody) {
-        Intent intent = new Intent(LoginActivity.this, MapActivity.class);
-        intent.putExtra("usuario", responseBody);
-        startActivity(intent);
-    }
+        try {
+            // Convertir la respuesta JSON en un objeto JSONObject
+            JSONObject jsonResponse = new JSONObject(responseBody);
 
-    // Método para manejar el inicio de sesión fallido.
+            // Extraer la información del usuario del objeto JSONObject
+            JSONObject userData = jsonResponse.getJSONObject("user");
+            String email = userData.getString("EMAIL");
+            int id = userData.getInt("ID");
+            String token = userData.getString("TOKEN");
+            // Agregar más campos según la estructura de la respuesta del servidor
+
+            // Crear un objeto Bundle para pasar los datos del usuario a la actividad MapActivity
+            Bundle userDataBundle = new Bundle();
+            userDataBundle.putString("email", email);
+            userDataBundle.putInt("id", id);
+            userDataBundle.putString("token", token);
+            // Agregar más campos según la estructura de la respuesta del servidor
+
+            // Crear un Intent para iniciar la actividad MapActivity y pasar los datos del usuario
+            Intent intent = new Intent(LoginActivity.this, MapActivity.class);
+            intent.putExtra("userData", userDataBundle);
+            startActivity(intent);
+        } catch (JSONException e) {
+            showAlert("Error", "Usuario o contraseña invalidos.");
+        }
+    }
     private void handleLoginFailure(String responseBody) {
         showAlert("Error", responseBody);
-    }
-
-    // Clase interna para representar las credenciales de inicio de sesión.
-    private static class CredencialesLogin {
-        private String email;
-        private String contrasena;
-
-        // Constructor de la clase CredencialesLogin.
-        public CredencialesLogin(String email, String contrasena) {
-            this.email = email;
-            this.contrasena = contrasena;
-        }
     }
 }
