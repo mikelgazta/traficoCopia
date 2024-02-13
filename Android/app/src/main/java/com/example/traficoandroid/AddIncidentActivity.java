@@ -1,5 +1,6 @@
 package com.example.traficoandroid;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.traficoandroid.models.DataItem;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +38,7 @@ public class AddIncidentActivity extends AppCompatActivity {
     private EditText direccionEditText;
     private double latitude;
     private double longitude;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class AddIncidentActivity extends AppCompatActivity {
         if (extras != null) {
             latitude = extras.getDouble("latitude");
             longitude = extras.getDouble("longitude");
+            token = extras.getString("token");
         }
 
         // Inicializar vistas
@@ -95,42 +99,57 @@ public class AddIncidentActivity extends AppCompatActivity {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(jsonBody, MediaType.parse("application/json; charset=utf-8"));
 
+        // Obtener el token de autenticación del intent
+        String jwtToken = getIntent().getStringExtra("token");
+
         Request request = new Request.Builder()
-                .url("http://127.0.0.1:8000/api/crearIncidencia")
+                .url("http://10.0.2.2:8000/api/crearIncidencia")
                 .post(body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", jwtToken) // Agregar el token de autenticación
                 .build();
+
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
                 // Manejar el fallo, por ejemplo, mostrar un mensaje al usuario
+                runOnUiThread(() -> {
+                    Toast.makeText(AddIncidentActivity.this, "Error al registrar la incidencia", Toast.LENGTH_SHORT).show();
+                });
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(AddIncidentActivity.this, "Incidencia registrada correctamente", Toast.LENGTH_SHORT).show();
-                        // Puedes finalizar esta actividad o realizar cualquier otra acción necesaria
-                        Intent intent = new Intent(AddIncidentActivity.this, MapActivity.class);
-                        startActivity(intent);
-                        finish();
-                    });
+                    // La solicitud fue exitosa
+                    // Obtener información de la nueva incidencia creada
+                    String jsonResponse = response.body().string();
+                    Gson gson = new Gson();
+                    DataItem nuevaIncidencia = new DataItem("myAPI", "incidencia", jsonResponse);
+
+                    // Convertir el objeto DataItem a una cadena JSON
+                    String jsonNuevaIncidencia = gson.toJson(nuevaIncidencia);
+
+                    // Crear un intent para pasar la información de vuelta a MapActivity
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("nuevaIncidencia", jsonNuevaIncidencia);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
                 } else {
-                    // La solicitud no fue exitosa (código de respuesta HTTP diferente de 2xx)
-                    // Por ejemplo, mostrar un mensaje de error al usuario indicando que ha ocurrido un problema al registrar la incidencia
+                    // La solicitud no fue exitosa
                     runOnUiThread(() -> {
                         try {
                             String errorMessage = response.body().string();
-                            Toast.makeText(AddIncidentActivity.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddIncidentActivity.this, "Error al registrar la incidencia: " + errorMessage, Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
                 }
             }
-
         });
     }
+
 }
