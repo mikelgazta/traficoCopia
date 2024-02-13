@@ -45,7 +45,6 @@ function App() {
 
     iniciarSesionAutomatico();
   }, []); // El segundo parámetro [] indica que esta función se ejecutará solo una vez al montar el componente
-
   // Renderiza el componente adecuado en función del estado currentComponent
   const renderComponent = () => {
     switch (currentComponent) {

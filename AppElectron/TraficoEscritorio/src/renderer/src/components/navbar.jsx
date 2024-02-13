@@ -32,5 +32,4 @@ function Navbar({ currentUser, navigateTo }) {
     </nav>
   );
 }
-
 export default Navbar;
