@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
-import './components/App.css';
-import CrearIncidencia from './components/CrearIncidencia';
+import './assets/App.css';
+import Dashboard from './components/Dashboard';
 
 function App() {
   // Define el estado para controlar qué componente se muestra
@@ -16,17 +16,19 @@ function App() {
 
   // Llamada a la API para iniciar sesión y obtener el token
   useEffect(() => {
-    const login = async () => {
+    const iniciarSesionAutomatico = async () => {
       try {
+        const credenciales = {
+          email: 'mikelgazta@plaiaundi.com',
+          password: '123456',
+        };
+
         const response = await fetch('http://127.0.0.1:8000/api/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            email: 'mikelgazta@plaiaundi.com',
-            password: '123456',
-          }),
+          body: JSON.stringify(credenciales),
         });
 
         if (!response.ok) {
@@ -41,32 +43,8 @@ function App() {
       }
     };
 
-    login();
+    iniciarSesionAutomatico();
   }, []); // El segundo parámetro [] indica que esta función se ejecutará solo una vez al montar el componente
-
-  // Llamada a la API para obtener las incidencias
-  useEffect(() => {
-    const fetchIncidents = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:8000/api/listaIncidencias', {
-          headers: {
-            Authorization: token,
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Error al obtener las incidencias');
-        }
-        const data = await response.json();
-        setIncidents(data);
-      } catch (error) {
-        console.error('Error al obtener las incidencias:', error);
-      }
-    };
-
-    if (token) {
-       fetchIncidents();
-     }
-  }, [token]); // Esta función se ejecutará cuando el token cambie
 
   // Renderiza el componente adecuado en función del estado currentComponent
   const renderComponent = () => {
@@ -75,16 +53,7 @@ function App() {
         return (
           <div>
             <Navbar currentUser="Usuario Ejemplo" navigateTo={navigateTo} />
-            <h2>Dashboard</h2>
-            <ul>
-              {incidents.map((incident) => (
-                <li key={incident.ID}>
-                  <h3>{incident.TIPO}</h3>
-                  <p>{incident.CAUSA}</p>
-                  {/* Agrega otros detalles de la incidencia según tus necesidades */}
-                </li>
-              ))}
-            </ul>
+            <Dashboard token={token} />
           </div>
         );
       case 'incidentForm':

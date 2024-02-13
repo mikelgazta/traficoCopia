@@ -1,6 +1,6 @@
 // SideMenu.jsx
 import React from 'react';
-import './SideMenu.css';
+import '../assets/SideMenu.css';
 
 const SideMenu = ({ activeItem, onItemClick }) => {
   return (

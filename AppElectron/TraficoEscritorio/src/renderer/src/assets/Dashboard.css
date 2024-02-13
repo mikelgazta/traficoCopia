@@ -1,0 +1,85 @@
+/* Estilos para el contenedor principal */
+.traffic-management {
+    display: flex;
+    height: 100vh; /* Altura completa del viewport */
+  }
+  
+  /* Estilos para la barra lateral */
+  .sidebar {
+    width: 200px;
+    background-color: #333;
+    color: white;
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 10px;
+  }
+  
+  .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .sidebar ul li a.active {
+    font-weight: bold;
+  }
+  
+  /* Estilos para el contenido principal */
+  .main-content {
+    flex: 1; /* Toma todo el espacio restante */
+    padding: 20px;
+  }
+  
+  /* Estilos para la barra de navegación superior */
+  .navbar {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+  }
+  
+  .navbar h2 {
+    margin: 0;
+  }
+  
+  /* Estilos generales para los formularios */
+  .form-container {
+    margin-top: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-input,
+  .form-textarea,
+  .form-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .form-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .form-button:hover {
+    background-color: #0056b3;
+  }
+  

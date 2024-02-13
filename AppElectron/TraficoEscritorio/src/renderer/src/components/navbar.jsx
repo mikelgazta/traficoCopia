@@ -1,24 +1,29 @@
 import React from 'react';
-import './Navbar.css';
+import { Link, useLocation } from 'react-router-dom';
 
-const Navbar = ({ currentUser, navigateTo }) => {
+function Navbar({ currentUser, navigateTo }) {
+  const location = useLocation();
+
+  // Función para determinar la visibilidad del enlace activo
+  const isActive = (path) => location.pathname.includes(path) ? 'active' : '';
+
   return (
     <nav className="navbar">
       <ul className="navbar-nav">
-        <li className="nav-item">
-          <a href="#" className="nav-link" onClick={() => navigateTo('dashboard')}>
+        <li className={`nav-item ${isActive('/dashboard')}`}>
+          <Link to="/dashboard" className="nav-link" onClick={() => navigateTo('dashboard')}>
             Dashboard
-          </a>
+          </Link>
         </li>
-        <li className="nav-item">
-          <a href="#" className="nav-link" onClick={() => navigateTo('incidentForm')}>
+        <li className={`nav-item ${isActive('/incidentForm')}`}>
+          <Link to="/incidentForm" className="nav-link" onClick={() => navigateTo('incidentForm')}>
             Incidencias
-          </a>
+          </Link>
         </li>
-        <li className="nav-item">
-          <a href="#" className="nav-link" onClick={() => navigateTo('settings')}>
+        <li className={`nav-item ${isActive('/settings')}`}>
+          <Link to="/settings" className="nav-link" onClick={() => navigateTo('settings')}>
             Settings
-          </a>
+          </Link>
         </li>
       </ul>
       <div className="user-info">
@@ -26,6 +31,6 @@ const Navbar = ({ currentUser, navigateTo }) => {
       </div>
     </nav>
   );
-};
+}
 
 export default Navbar;

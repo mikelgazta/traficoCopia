@@ -2,7 +2,7 @@ import React from 'react';
 import SideMenu from './SideMenu';
 import IncidentForm from './IncidentForm';
 import Navbar from './Navbar';
-import './CrearIncidencia.css';
+import '../assets/CrearIncidencia.css';
 
 function CrearIncidencia() {
   return (

@@ -1,88 +1,225 @@
-import React, { useState } from 'react';
-import './IncidentForm.css';
-import SideMenu from './SideMenu';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import '../assets/IncidentForm.css';
+import useToken from '../Store/useStore'; // Importa el store
 
 function IncidentForm() {
-  // State para almacenar los valores de los campos del formulario
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    date: '',
-    time: '',
-    incidentType: '',
-    image: null, // Para almacenar la imagen adjunta
-  });
+  const location = useLocation();
+  const isEditing = location.state && location.state.incident;
+  const { token } = useToken();
 
-  // Función para manejar cambios en los campos de texto del formulario
+  function transformIncidentData(incidentData) {
+    const transformedData = {};
+    for (const key in incidentData) {
+      if (
+        incidentData[key] &&
+        typeof incidentData[key] === 'object' &&
+        'string' in incidentData[key]
+      ) {
+        transformedData[key] = incidentData[key].string;
+      } else if (
+        incidentData[key] &&
+        typeof incidentData[key] === 'object' &&
+        !('string' in incidentData[key])
+      ) {
+        transformedData[key] = ''; // Si es un objeto sin propiedad 'string', establece el campo como una cadena vacía
+      } else {
+        transformedData[key] = incidentData[key];
+      }
+    }
+    return transformedData;
+  }
+
+  const initialState = {
+    tipo: '',
+    causa: '',
+    comienzo: '',
+    nivel_incidencia: '',
+    carretera: '',
+    direccion: '',
+    latitud: '',
+    longitud: '',
+    usuario: 'mikelgazta@plaiaundi.com'
+  };
+
+  const [incident, setIncident] = useState(initialState);
+
+  useEffect(() => {
+    if (isEditing && location.state.incident) {
+      // Primero transforma los datos para obtener solo los valores 'string'
+      const transformedIncident = transformIncidentData(location.state.incident);
+
+      // Luego, formatea la fecha de comienzo si es necesario
+      if (transformedIncident.comienzo) {
+        transformedIncident.comienzo = formatDate(transformedIncident.comienzo);
+      }
+
+      // Establece el estado con los datos transformados y formateados
+      setIncident(transformedIncident);
+    }
+  }, [location, isEditing]);
+
+  const formatDate = (dateString) => {
+    const parts = dateString.match(/(\d{2})-(\w{3})-(\d{2})/);
+    if (!parts) return '';
+
+    const months = {
+      'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04', 'MAY': '05', 'JUN': '06',
+      'JUL': '07', 'AUG': '08', 'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'
+    };
+    const year = '20' + parts[3];
+    const month = months[parts[2].toUpperCase()];
+    const day = parts[1];
+
+    return `${year}-${month}-${day}`;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setIncident((prevState) => ({
+      ...prevState,
       [name]: value,
-    });
+    }));
   };
 
-  // Función para manejar cambios en el campo de imagen del formulario
-  const handleImageChange = (e) => {
-    const imageFile = e.target.files[0];
-    setFormData({
-      ...formData,
-      image: imageFile,
-    });
-  };
-
-  // Función para manejar el envío del formulario
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aquí puedes enviar formData a tu backend para procesar la información
-    console.log(formData);
-    // También puedes resetear el estado del formulario después de enviar los datos
-    // setFormData({
-    //   title: '',
-    //   description: '',
-    //   date: '',
-    //   time: '',
-    //   incidentType: '',
-    //   image: null,
-    // });
+    const method = isEditing ? 'PUT' : 'POST';
+    const url = `http://127.0.0.1:8000/api/incidencias/${isEditing ? incident.id : ''}`;
+
+    try {
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${token}` // Asegúrate de que el token es correcto
+        },
+        body: JSON.stringify(incident)
+      });
+
+      if (response.ok) {
+        // Procesar respuesta
+        if (!isEditing)
+          setIncident(initialState);
+      } else {
+        console.error('Error en la respuesta del servidor:', response.status);
+      }
+    } catch (error) {
+      console.error('Error al enviar el formulario:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (isEditing) {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/incidencias/${incident.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${token}`
+          }
+        });
+  
+        if (response.ok) {
+          // Procesar respuesta
+          setIncident(initialState);
+        } else {
+          console.error('Error en la respuesta del servidor:', response.status);
+        }
+      } catch (error) {
+        console.error('Error al intentar borrar:', error);
+      }
+    }
   };
 
   return (
-    <div className="form-container">
-      <h2>Incident Form</h2>
+    <div className="incident-form">
+      <h1 className='incidencia-text'>Gestion de Trafico - Incidencias</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="form-label">Titulo:</label>
-          <input type="text" name="title" value={formData.title} onChange={handleChange} className="form-input" />
+          <label>Tipo</label>
+          <input
+            type="text"
+            name="tipo" // El nombre del campo debe ser "tipo"
+            value={incident.tipo}
+            onChange={handleChange}
+          />
         </div>
         <div className="form-group">
-          <label className="form-label">Descripcion:</label>
-          <textarea name="description" value={formData.description} onChange={handleChange} className="form-textarea" />
+          <label>Causa</label>
+          <input
+            type="text"
+            name="causa"
+            value={incident.causa}
+            onChange={handleChange}
+          />
         </div>
         <div className="form-group">
-          <label className="form-label">Fecha:</label>
-          <input type="date" name="date" value={formData.date} onChange={handleChange} className="form-input" />
+          <label>Fecha de Comienzo</label>
+          <input
+            type="date"
+            name="comienzo"
+            value={incident.comienzo}
+            onChange={handleChange}
+          />
         </div>
         <div className="form-group">
-          <label className="form-label">Hora:</label>
-          <input type="time" name="time" value={formData.time} onChange={handleChange} className="form-input" />
+          <label>Nivel de Incidencia</label>
+          <input
+            type="text"
+            name="nivel_incidencia"
+            value={incident.nivel_incidencia}
+            onChange={handleChange}
+          />
         </div>
         <div className="form-group">
-          <label className="form-label">Tipo de incidente:</label>
-          <select name="incidentType" value={formData.incidentType} onChange={handleChange} className="form-select">
-            <option value="type1">Type 1</option>
-            <option value="type2">Type 2</option>
-            <option value="type3">Type 3</option>
-          </select>
+          <label>Carretera</label>
+          <input
+            type="text"
+            name="carretera"
+            value={incident.carretera}
+            onChange={handleChange}
+          />
         </div>
         <div className="form-group">
-          <label className="form-label">Adjuntar Imagen:</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} className="form-input" />
+          <label>Direccion</label>
+          <input
+            type="text"
+            name="direccion"
+            value={incident.direccion}
+            onChange={handleChange}
+          />
         </div>
-        <button type="submit" className="form-button">Submit</button>
+        <div className="form-group">
+          <label>Latitud</label>
+          <input
+            type="text"
+            name="latitud"
+            value={incident.latitud}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Longitud</label>
+          <input
+            type="text"
+            name="longitud"
+            value={incident.longitud}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="form-actions">
+          {isEditing && (
+            <button type="button" onClick={handleDelete}>
+              Borrar
+            </button>
+          )}
+          <button type="submit">{isEditing ? 'Actualizar' : 'Crear'}</button>
+        </div>
       </form>
     </div>
   );
+  
 }
 
 export default IncidentForm;
