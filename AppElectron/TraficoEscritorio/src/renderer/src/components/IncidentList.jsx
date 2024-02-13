@@ -3,27 +3,10 @@ import axios from 'axios';
 import IncidentList from './IncidentList';
 
 function App() {
+  const navigate = useNavigate();
   const [incidents, setIncidents] = useState([]);
-  const [token, setToken] = useState('');
+  const { token } = useToken();
 
-  // Llamada a la API para iniciar sesión y obtener el token
-  useEffect(() => {
-    const login = async () => {
-      try {
-        const response = await axios.post('http://127.0.0.1:8000/api/login', {
-          email: 'mikelgazta@plaiaundi.com',
-          password: '123456',
-        });
-
-        const data = response.data;
-        setToken(data.token);
-      } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-      }
-    };
-
-    login();
-  }, []); // Se ejecuta solo una vez al cargar el componente
 
   // Llamada a la API para obtener las incidencias
   useEffect(() => {
@@ -31,7 +14,7 @@ function App() {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/listaIncidencias', {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           },
         });
         setIncidents(response.data);
@@ -45,9 +28,21 @@ function App() {
     }
   }, [token]); // Se ejecuta cuando el token cambia
 
+  const handleEdit = (incident) => {
+    navigate('/crearIncidencia', { state: { incident } });
+};
+
   return (
-    <div className="container">
-      <IncidentList incidents={incidents} />
+    <div className="incidentList">
+      <h2>Modificar Incidencias</h2>
+      {incidents.length > 0 ? incidents.map((incident) => (
+        <div key={incident.id.string} className="incidentItem" onClick={() => handleEdit(incident)}>
+          <p>{incident.tipo.string}</p>
+          <p>{incident.causa.string}</p>
+          <p>{incident.latitud.string}</p>
+          <p>{incident.longitud.string}</p>
+        </div>
+      )) : <p>No hay incidencias para mostrar.</p>}
     </div>
   );
 }

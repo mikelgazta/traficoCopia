@@ -134,13 +134,13 @@ function IncidentForm() {
 
   return (
     <div className="incident-form">
-      <h1 className='incidencia-text'>Gestion de Trafico - Incidencias</h1>
+      <h1 className='incidencia-text'>Incidencias</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Tipo</label>
           <input
             type="text"
-            name="tipo" // El nombre del campo debe ser "tipo"
+            name="tipo"
             value={incident.tipo}
             onChange={handleChange}
           />

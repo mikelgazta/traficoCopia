@@ -1,80 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import './assets/App.css';
+import React, { useEffect } from 'react';
+import useStore from './Store/useStore'; // Importa el store
 import Dashboard from './components/Dashboard';
 
 function App() {
-  // Define el estado para controlar qué componente se muestra
-  const [currentComponent, setCurrentComponent] = useState('dashboard');
-  const [incidents, setIncidents] = useState([]);
-  const [token, setToken] = useState('');
+  const { token, error, setToken, setError } = useStore(); // Obtiene el estado y las funciones
 
-  // Función para cambiar el componente a mostrar
-  const navigateTo = (component) => {
-    setCurrentComponent(component);
-  };
-
-  // Llamada a la API para iniciar sesión y obtener el token
   useEffect(() => {
-    const iniciarSesionAutomatico = async () => {
-      try {
-        const credenciales = {
-          email: 'mikelgazta@plaiaundi.com',
-          password: '123456',
-        };
-
-        const response = await fetch('http://127.0.0.1:8000/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(credenciales),
-        });
-
-        if (!response.ok) {
-          throw new Error('Error al iniciar sesión');
-        }
-
-        const data = await response.json();
-        setToken(data.user.TOKEN);
-      
-      } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-      }
-    };
-
     iniciarSesionAutomatico();
-  }, []); // El segundo parámetro [] indica que esta función se ejecutará solo una vez al montar el componente
-  // Renderiza el componente adecuado en función del estado currentComponent
-  const renderComponent = () => {
-    switch (currentComponent) {
-      case 'dashboard':
-        return (
-          <div>
-            <Navbar currentUser="Usuario Ejemplo" navigateTo={navigateTo} />
-            <Dashboard token={token} />
-          </div>
-        );
-      case 'incidentForm':
-        return <CrearIncidencia />;
-      case 'settings':
-        return (
-          <div>
-            {/* Contenido de la configuración */}
-          </div>
-        );
-      default:
-        return (
-          <div>
-            <p>Página no encontrada</p>
-          </div>
-        );
+  }, []);
+
+  const iniciarSesionAutomatico = async () => {
+    try {
+      const data = await iniciarSesion();
+      setToken(data);
+      setError('');
+    } catch (error) {
+      handleLoginError(error);
     }
   };
 
+  const iniciarSesion = async () => {
+    const credenciales = {
+      email: 'mikelgazta@plaiaundi.com',
+      contrasena: '123456',
+    };
+
+    const response = await fetch('http://127.0.0.1:8080/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credenciales),
+    });
+
+    if (!response.ok) {
+      throw new Error('Las credenciales son incorrectas.');
+    }
+
+    return await response.text();
+  };
+
+  const handleLoginError = (error) => {
+    console.error('Error al iniciar sesión:', error);
+    setError('Error al iniciar sesión: ' + error.message);
+  };
+
   return (
-    <div className="container">
-      {renderComponent()}
+    <div>
+      <Dashboard />
     </div>
   );
 }
