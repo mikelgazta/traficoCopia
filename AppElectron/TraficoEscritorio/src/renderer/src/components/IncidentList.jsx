@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import IncidentList from './IncidentList';
+import { useNavigate } from 'react-router-dom';
+import '../assets/IncidentList.css';
+import useToken from '../Store/useStore'; // Importa el store
 
 function App() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ function App() {
       fetchIncidents();
     }
   }, [token]); // Se ejecuta cuando el token cambia
-
+  //}, []);
   const handleEdit = (incident) => {
     navigate('/crearIncidencia', { state: { incident } });
 };

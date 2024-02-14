@@ -113,7 +113,7 @@ function CameraForm() {
             try {
                 const deleteData = { id: camera.id };
 
-                const response = await fetch(`http://127.0.0.1:8080/api/camaras/${camera.id}`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/camaras/${camera.id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',

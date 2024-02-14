@@ -4,7 +4,7 @@ import IncidentForm from './IncidentForm';
 import CameraForm from './CameraForm';
 import IncidentList from './IncidentList';
 import CameraList from './CameraList';
-import Navbar from '../assets/navbar.css'; // Asegúrate de importar tu componente Navbar
+import Navbar from './Navbar';
 import '../assets/Dashboard.css'; // Importa tus estilos CSS
 
 function DynamicForm() {
@@ -26,7 +26,7 @@ function DynamicForm() {
 function Dashboard() {
     return (
         <Router>
-            <div className="traffic-management">
+            <div className="dashboard">
                 <div className="sidebar">
                     <ul>
                         <li><NavLink to="/incidencias/modificar" activeClassName="active">Incidencias</NavLink></li>
@@ -34,8 +34,9 @@ function Dashboard() {
                     </ul>
                 </div>
                 <div className="main-content">
-                    <div className="navbar">
-                        <h2>Título del Dashboard</h2>
+                    <Navbar />
+                    <div className="title">
+                        <h2>Gestor de incidencias</h2>
                     </div>
                     <Routes>
                         <Route path="/incidencias" element={<IncidentForm />} />

@@ -3,32 +3,32 @@ import { useLocation } from 'react-router-dom';
 import '../assets/IncidentForm.css';
 import useToken from '../Store/useStore'; // Importa el store
 
+// Función para transformar los datos de las Incidencias
+function transformIncidentData(incidentData) {
+  const transformedData = {};
+  for (const key in incidentData) {
+    if (
+      incidentData[key] &&
+      typeof incidentData[key] === 'object' &&
+      'string' in incidentData[key]
+    ) {
+      transformedData[key] = incidentData[key].string;
+    } else if (
+      incidentData[key] &&
+      typeof incidentData[key] === 'object' &&
+      !('string' in incidentData[key])
+    ) {
+      transformedData[key] = ''; // Si es un objeto sin propiedad 'string', establece el campo como una cadena vacía
+    } else {
+      transformedData[key] = incidentData[key];
+    }
+  }
+  return transformedData;
+}
 function IncidentForm() {
   const location = useLocation();
   const isEditing = location.state && location.state.incident;
   const { token } = useToken();
-
-  function transformIncidentData(incidentData) {
-    const transformedData = {};
-    for (const key in incidentData) {
-      if (
-        incidentData[key] &&
-        typeof incidentData[key] === 'object' &&
-        'string' in incidentData[key]
-      ) {
-        transformedData[key] = incidentData[key].string;
-      } else if (
-        incidentData[key] &&
-        typeof incidentData[key] === 'object' &&
-        !('string' in incidentData[key])
-      ) {
-        transformedData[key] = ''; // Si es un objeto sin propiedad 'string', establece el campo como una cadena vacía
-      } else {
-        transformedData[key] = incidentData[key];
-      }
-    }
-    return transformedData;
-  }
 
   const initialState = {
     tipo: '',
@@ -40,6 +40,23 @@ function IncidentForm() {
     latitud: '',
     longitud: '',
     usuario: 'mikelgazta@plaiaundi.com'
+  };
+
+
+
+  const formatDate = (dateString) => {
+    const parts = dateString.match(/(\d{2})-(\w{3})-(\d{2})/);
+    if (!parts) return '';
+
+    const months = {
+      'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04', 'MAY': '05', 'JUN': '06',
+      'JUL': '07', 'AUG': '08', 'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'
+    };
+    const year = '20' + parts[3];
+    const month = months[parts[2].toUpperCase()];
+    const day = parts[1];
+
+    return `${year}-${month}-${day}`;
   };
 
   const [incident, setIncident] = useState(initialState);
@@ -58,21 +75,6 @@ function IncidentForm() {
       setIncident(transformedIncident);
     }
   }, [location, isEditing]);
-
-  const formatDate = (dateString) => {
-    const parts = dateString.match(/(\d{2})-(\w{3})-(\d{2})/);
-    if (!parts) return '';
-
-    const months = {
-      'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04', 'MAY': '05', 'JUN': '06',
-      'JUL': '07', 'AUG': '08', 'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'
-    };
-    const year = '20' + parts[3];
-    const month = months[parts[2].toUpperCase()];
-    const day = parts[1];
-
-    return `${year}-${month}-${day}`;
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -1,0 +1,37 @@
+/* IncidentList.css */
+
+.incidentList {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .incidentList h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .incidentItem {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .incidentItem:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .incidentItem p {
+    margin: 5px 0;
+  }
+  
+  .incidentItem p:first-child {
+    font-weight: bold;
+  }
+  

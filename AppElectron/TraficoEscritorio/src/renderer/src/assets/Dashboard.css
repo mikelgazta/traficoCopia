@@ -1,5 +1,5 @@
 /* Estilos para el contenedor principal */
-.traffic-management {
+.dashboard {
   display: flex;
   height: 100vh; /* Altura completa del viewport */
 }
@@ -33,7 +33,6 @@
 /* Estilos para el contenido principal */
 .main-content {
   flex: 1; /* Toma todo el espacio restante */
-  padding: 20px;
 }
 
 /* Estilos para la barra de navegación superior */
