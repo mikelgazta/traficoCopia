@@ -121,7 +121,7 @@ function IncidentForm() {
             'Authorization': `${token}`
           }
         });
-  
+
         if (response.ok) {
           // Procesar respuesta
           setIncident(initialState);
@@ -216,12 +216,14 @@ function IncidentForm() {
               Borrar
             </button>
           )}
-          <button type="submit">{isEditing ? 'Actualizar' : 'Crear'}</button>
+          <button type="submit" className="submit-button">
+            {isEditing ? 'Actualizar' : 'Crear'}
+          </button>
         </div>
       </form>
     </div>
   );
-  
+
 }
 
 export default IncidentForm;

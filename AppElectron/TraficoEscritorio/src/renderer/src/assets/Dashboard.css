@@ -7,9 +7,9 @@
 /* Estilos para la barra lateral */
 .sidebar {
   width: 200px;
-  background-color: #333;
   color: white;
   padding-top: 20px;
+  background-color: #007bff; 
 }
 
 .sidebar ul {
@@ -22,7 +22,7 @@
 }
 
 .sidebar ul li a {
-  color: white;
+  color: black;
   text-decoration: none;
 }
 

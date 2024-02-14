@@ -19,7 +19,7 @@ function transformCameraData(cameraData) {
             typeof cameraData[key] === 'object' &&
             !('string' in cameraData[key])
         ) {
-            transformedData[key] = ''; 
+            transformedData[key] = '';
         } else {
             transformedData[key] = cameraData[key];
         }
@@ -41,8 +41,8 @@ function CameraForm() {
         latitud: '',
         longitud: '',
         carretera: '',
-        kilometro: '', 
-        usuario: 'mikelgazta@plaiaundi.com' 
+        kilometro: '',
+        usuario: 'mikelgazta@plaiaundi.com'
     };
     const [camera, setCamera] = useState(initialState);
 

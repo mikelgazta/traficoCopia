@@ -35,9 +35,6 @@ function Dashboard() {
                 </div>
                 <div className="main-content">
                     <Navbar />
-                    <div className="title">
-                        <h2>Gestor de incidencias</h2>
-                    </div>
                     <Routes>
                         <Route path="/incidencias" element={<IncidentForm />} />
                         <Route path="/camaras" element={<CameraForm />} />
