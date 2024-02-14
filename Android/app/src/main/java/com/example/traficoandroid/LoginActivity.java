@@ -110,6 +110,8 @@ public class LoginActivity extends AppCompatActivity {
             // Convertir la respuesta JSON en un objeto JSONObject
             JSONObject jsonResponse = new JSONObject(responseBody);
 
+            Log.d("LoginResponse", "Response Body: " + responseBody);
+
             // Extraer la información del usuario del objeto JSONObject
             JSONObject userData = jsonResponse.getJSONObject("user");
             String email = userData.getString("EMAIL");

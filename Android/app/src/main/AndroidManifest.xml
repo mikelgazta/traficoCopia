@@ -41,6 +41,9 @@
         <activity
             android:name=".AddIncidentActivity"
             android:exported="false" />
+        <activity
+            android:name=".CamarasActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

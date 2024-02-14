@@ -61,12 +61,23 @@ public class AddIncidentActivity extends AppCompatActivity {
         carreteraEditText = findViewById(R.id.carreteraEditText);
         direccionEditText = findViewById(R.id.direccionEditText);
         Button guardarButton = findViewById(R.id.guardarButton);
+        Button cancelarButton = findViewById(R.id.cancelarButton);
 
         // Configurar listener para el botón de enviar
         guardarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 enviarDatos();
+            }
+        });
+
+        // Configurar listener para el botón de cancelar
+        cancelarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Simplemente regresa a la actividad anterior (MapActivity) sin guardar nada
+                setResult(Activity.RESULT_CANCELED);
+                finish();
             }
         });
     }

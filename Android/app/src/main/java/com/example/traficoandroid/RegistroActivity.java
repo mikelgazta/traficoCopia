@@ -87,6 +87,37 @@ public class RegistroActivity extends AppCompatActivity {
                 final String responseBody = response.body().string();
                 if (response.isSuccessful()) {
                     showAlert("Registro Exitoso", "Usuario registrado correctamente.");
+
+                    // Enviar correo de bienvenida
+                    CorreoRequest correoRequest = new CorreoRequest();
+                    correoRequest.setDestinatario(email);
+                    correoRequest.setAsunto("¡Bienvenido a nuestra aplicación!");
+                    correoRequest.setCuerpo("¡Gracias por registrarte en nuestra aplicación!");
+
+                    // Crear la solicitud para enviar el correo
+                    RequestBody correoBody = RequestBody.create(correoRequest.toString(), MediaType.parse("application/json"));
+
+                    Request requestM = new Request.Builder()
+                            .url("http://10.0.2.2:8000/api/enviarCorreo")
+                            .post(correoBody)
+                            .build();
+
+                    client.newCall(requestM).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            showAlert("Error al enviar el correo de bienvenida", e.getMessage());
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (response.isSuccessful()) {
+                                showAlert("Correo enviado", "Se ha enviado un correo de bienvenida al usuario.");
+                            } else {
+                                showAlert("Error al enviar el correo de bienvenida", "No se pudo enviar el correo de bienvenida.");
+                            }
+                        }
+                    });
+
                     navigateToLogin();
                 } else {
                     showAlert("Error al registrar", responseBody);
@@ -94,6 +125,7 @@ public class RegistroActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void showAlert(final String title, final String message) {
         runOnUiThread(() -> new AlertDialog.Builder(RegistroActivity.this)

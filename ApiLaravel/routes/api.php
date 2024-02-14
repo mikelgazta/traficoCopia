@@ -26,6 +26,8 @@ Route::middleware([CorsMiddleware::class])->group(function () {
     Route::post('/logout', [App\Http\Controllers\API\LoginController::class, 'logout']);
 
     Route::middleware('auth:api')->group(function () {
+
+        Route::post('/enviarCorreo', [App\Http\Controllers\CorreoController::class, 'enviarCorreo']);
         // Rutas que requieren autenticación y CORS
         Route::get('/listaIncidencias', [IncidenciaController::class, 'verIncidencias']);
         Route::post('/crearIncidencia', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);
