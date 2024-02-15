@@ -24,10 +24,10 @@ Route::middleware([CorsMiddleware::class])->group(function () {
     Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
     Route::post('/login', [App\Http\Controllers\API\LoginController::class, 'login'])->name('login');
     Route::post('/logout', [App\Http\Controllers\API\LoginController::class, 'logout']);
+    Route::post('/enviarCorreo', [App\Http\Controllers\CorreoController::class, 'enviarCorreo']);
 
     Route::middleware('auth:api')->group(function () {
 
-        Route::post('/enviarCorreo', [App\Http\Controllers\CorreoController::class, 'enviarCorreo']);
         // Rutas que requieren autenticación y CORS
         Route::get('/listaIncidencias', [IncidenciaController::class, 'verIncidencias']);
         Route::post('/crearIncidencia', [App\Http\Controllers\IncidenciaController::class, 'crearIncidencia']);

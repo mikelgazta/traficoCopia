@@ -89,34 +89,7 @@ public class RegistroActivity extends AppCompatActivity {
                     showAlert("Registro Exitoso", "Usuario registrado correctamente.");
 
                     // Enviar correo de bienvenida
-                    CorreoRequest correoRequest = new CorreoRequest();
-                    correoRequest.setDestinatario(email);
-                    correoRequest.setAsunto("¡Bienvenido a nuestra aplicación!");
-                    correoRequest.setCuerpo("¡Gracias por registrarte en nuestra aplicación!");
-
-                    // Crear la solicitud para enviar el correo
-                    RequestBody correoBody = RequestBody.create(correoRequest.toString(), MediaType.parse("application/json"));
-
-                    Request requestM = new Request.Builder()
-                            .url("http://10.0.2.2:8000/api/enviarCorreo")
-                            .post(correoBody)
-                            .build();
-
-                    client.newCall(requestM).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            showAlert("Error al enviar el correo de bienvenida", e.getMessage());
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            if (response.isSuccessful()) {
-                                showAlert("Correo enviado", "Se ha enviado un correo de bienvenida al usuario.");
-                            } else {
-                                showAlert("Error al enviar el correo de bienvenida", "No se pudo enviar el correo de bienvenida.");
-                            }
-                        }
-                    });
+                    sendWelcomeEmail(email);
 
                     navigateToLogin();
                 } else {
@@ -125,6 +98,42 @@ public class RegistroActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void sendWelcomeEmail(String email) {
+        // Crear la solicitud para enviar el correo
+        CorreoRequest correoRequest = new CorreoRequest();
+        correoRequest.setDestinatario(email);
+        correoRequest.setAsunto("¡Bienvenido a nuestra aplicación!");
+        correoRequest.setCuerpo("¡Gracias por registrarte en nuestra aplicación!");
+
+        MediaType mediaType = MediaType.parse("application/json");
+        String json = "{\"destinatario\":\"" + correoRequest.getDestinatario() + "\",\"asunto\":\"" + correoRequest.getAsunto() + "\",\"cuerpo\":\"" + correoRequest.getCuerpo() + "\"}";
+        RequestBody correoBody = RequestBody.create(json, mediaType);
+
+        Request requestM = new Request.Builder()
+                .url("http://10.0.2.2:8000/api/enviarCorreo")
+                .post(correoBody)
+                .build();
+
+        client.newCall(requestM).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                showAlert("Error al enviar el correo de bienvenida", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    showAlert("Correo enviado", "Se ha enviado un correo de bienvenida al usuario.");
+                } else {
+                    showAlert("Error al enviar el correo de bienvenida", "No se pudo enviar el correo de bienvenida.");
+                }
+            }
+        });
+    }
+
+
+
 
 
     private void showAlert(final String title, final String message) {

@@ -3,6 +3,7 @@ package com.example.traficoandroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,12 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.traficoandroid.models.DataItem;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -48,8 +49,8 @@ public class AddIncidentActivity extends AppCompatActivity {
         // Obtener datos de latitud y longitud del intent
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            latitude = extras.getDouble("latitude");
-            longitude = extras.getDouble("longitude");
+            latitude = extras.getDouble("LATITUD");
+            longitude = extras.getDouble("LONGITUD");
             token = extras.getString("token");
         }
 
@@ -92,19 +93,19 @@ public class AddIncidentActivity extends AppCompatActivity {
         String direccion = direccionEditText.getText().toString();
 
         // Construir el objeto JSON con los datos
-        Map<String, Object> incidenteMap = new HashMap<>();
-        incidenteMap.put("TIPO", tipo);
-        incidenteMap.put("CAUSA", causa);
-        incidenteMap.put("COMIENZO", comienzo);
-        incidenteMap.put("NVL_INCIDENCIA", nvlIncidencia);
-        incidenteMap.put("CARRETERA", carretera);
-        incidenteMap.put("DIRECCION", direccion);
-        incidenteMap.put("LATITUD", latitude);
-        incidenteMap.put("LONGITUD", longitude);
-        incidenteMap.put("USUARIO", "mikelgazta@gmail.com");
+        JsonObject incidenteJson = new JsonObject();
+        incidenteJson.addProperty("TIPO", tipo);
+        incidenteJson.addProperty("CAUSA", causa);
+        incidenteJson.addProperty("COMIENZO", comienzo);
+        incidenteJson.addProperty("NVL_INCIDENCIA", nvlIncidencia);
+        incidenteJson.addProperty("CARRETERA", carretera);
+        incidenteJson.addProperty("DIRECCION", direccion);
+        incidenteJson.addProperty("LATITUD", latitude);
+        incidenteJson.addProperty("LONGITUD", longitude);
+        incidenteJson.addProperty("USUARIO", "mikelgazta@gmail.com");
 
-        // Convertir el mapa a JSON
-        String jsonBody = new Gson().toJson(incidenteMap);
+        // Convertir el JSON a una cadena
+        String jsonBody = incidenteJson.toString();
 
         // Realizar la solicitud HTTP con OkHttp
         OkHttpClient client = new OkHttpClient();
@@ -137,8 +138,27 @@ public class AddIncidentActivity extends AppCompatActivity {
                     // La solicitud fue exitosa
                     // Obtener información de la nueva incidencia creada
                     String jsonResponse = response.body().string();
+                    Log.d("ServerResponse", "Response: " + jsonResponse); // Agrega este registro
+
                     Gson gson = new Gson();
-                    DataItem nuevaIncidencia = new DataItem("myAPI", "incidencia", jsonResponse);
+
+                    // Parsear el JSON usando Gson y JsonParser para manejar JSON mal formado
+                    JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
+
+                    // Obtener campos del JSON y crear un nuevo objeto DataItem
+                    String tipo = jsonObject.get("TIPO").getAsString();
+                    String causa = jsonObject.get("CAUSA").getAsString();
+                    String comienzo = jsonObject.get("COMIENZO").getAsString();
+                    String nivelIncidencia = jsonObject.get("NVL_INCIDENCIA").getAsString();
+                    String carretera = jsonObject.get("CARRETERA").getAsString();
+                    String direccion = jsonObject.get("DIRECCION").getAsString();
+                    double latitud = jsonObject.get("LATITUD").getAsDouble();
+                    double longitud = jsonObject.get("LONGITUD").getAsDouble();
+                    String usuario = jsonObject.get("USUARIO").getAsString();
+                    int id = jsonObject.get("ID").getAsInt(); // Nuevo campo ID
+
+                    // Crear un nuevo objeto DataItem con los campos obtenidos
+                    DataItem nuevaIncidencia = new DataItem("myApi", "incidencia", createJsonString(tipo, causa, comienzo, nivelIncidencia, carretera, direccion, latitud, longitud, usuario));
 
                     // Convertir el objeto DataItem a una cadena JSON
                     String jsonNuevaIncidencia = gson.toJson(nuevaIncidencia);
@@ -153,6 +173,7 @@ public class AddIncidentActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         try {
                             String errorMessage = response.body().string();
+                            Log.e("ServerResponse", "Error response: " + errorMessage); // Agrega este registro
                             Toast.makeText(AddIncidentActivity.this, "Error al registrar la incidencia: " + errorMessage, Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -163,4 +184,18 @@ public class AddIncidentActivity extends AppCompatActivity {
         });
     }
 
+    // Método para crear una cadena JSON a partir de los valores dados
+    private String createJsonString(String tipo, String causa, String comienzo, String nivelIncidencia, String carretera, String direccion, double latitud, double longitud, String usuario) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("TIPO", tipo);
+        jsonObject.addProperty("CAUSA", causa);
+        jsonObject.addProperty("COMIENZO", comienzo);
+        jsonObject.addProperty("NVL_INCIDENCIA", nivelIncidencia);
+        jsonObject.addProperty("CARRETERA", carretera);
+        jsonObject.addProperty("DIRECCION", direccion);
+        jsonObject.addProperty("LATITUD", latitud);
+        jsonObject.addProperty("LONGITUD", longitud);
+        jsonObject.addProperty("USUARIO", usuario);
+        return jsonObject.toString();
+    }
 }

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.traficoandroid.datamanagers.DataLoadListener;
 import com.example.traficoandroid.datamanagers.IncidenciasDatamanager;
+import com.example.traficoandroid.datamanagers.CamarasDatamanager;
 import com.example.traficoandroid.models.DataItem;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -28,6 +29,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private IncidenciasDatamanager dataManager;
+
+    private CamarasDatamanager camarasDataManager;
+
     private String jwtToken;
 
     @Override
@@ -41,6 +45,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         dataManager = new IncidenciasDatamanager();
+        camarasDataManager = new CamarasDatamanager();
+
 
         // Obtener el token del Intent
         Bundle userDataBundle = getIntent().getBundleExtra("userData");
@@ -54,8 +60,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             mMap.setOnMapClickListener(latLng -> {
                 // Abrir AddIncidentActivity con los datos de latitud, longitud y el token
                 Intent intent = new Intent(MapActivity.this, AddIncidentActivity.class);
-                intent.putExtra("latitud", latLng.latitude);
-                intent.putExtra("longitud", latLng.longitude);
+                intent.putExtra("LATITUD", latLng.latitude);
+                intent.putExtra("LONGITUD", latLng.longitude);
                 intent.putExtra("token", jwtToken); // Pasar el token como extra
                 startActivityForResult(intent, REQUEST_ADD_INCIDENT);
             });
@@ -88,12 +94,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Verificar la disponibilidad del token
         if (jwtToken != null && !jwtToken.isEmpty()) {
             // Cargar los datos de tu API
-            Log.d("loadDataAndDisplayMarkers", "jwtToken-loadDataAndDisplayMarkers(): " + jwtToken);
+            //Log.d("loadDataAndDisplayMarkers", "jwtToken-loadDataAndDisplayMarkers(): " + jwtToken);
 
             dataManager.cargarListaIncidencias(jwtToken, new DataLoadListener() {
                 @Override
                 public void onDataLoaded(List<DataItem> items) {
-                    Log.d("MapActivity", "Items cargados: " + items.toString());
+                    Log.d("MapActivity", "Items cargados de mi api: " + items.toString());
                     displayDataOnMap(items);
                 }
 
@@ -102,12 +108,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     Log.e("MapActivity", "Error loading data from my API", e);
                 }
             });
+            camarasDataManager.cargarListaCamaras(jwtToken, new DataLoadListener() {
+                @Override
+                public void onDataLoaded(List<DataItem> camaras) {
+                    Log.d("MapActivity", "Cámaras cargadas: " + camaras.toString());
+                    displayDataOnMap(camaras); // Puede reutilizar el método para mostrar las cámaras en el mapa
+                }
 
+                @Override
+                public void onError(Exception e) {
+                    Log.e("MapActivity", "Error loading cameras", e);
+                }
+            });
+
+            // Cargar los datos de las cámaras de OpenData Euskadi y mostrarlos en el mapa
+            camarasDataManager.loadOpenDataEuskadiCameras()
+                    .thenAcceptAsync(camaras -> {
+                        Log.d("MapActivity", "Cámaras de OpenData Euskadi cargadas: " + camaras.toString());
+                        displayDataOnMap(camaras); // Puede reutilizar el método para mostrar las cámaras en el mapa
+                    }, this::runOnUiThread)
+                    .exceptionally(e -> {
+                        Log.e("MapActivity", "Error loading OpenData Euskadi cameras", e);
+                        return null;
+                    });
             // Cargar los datos de OpenDataEuskadi
             dataManager.cargarListaIncidenciasOpenDataEuskadi(new DataLoadListener() {
                 @Override
                 public void onDataLoaded(List<DataItem> items) {
-                    Log.d("MapActivity", "Items cargados: " + items.toString());
+                    Log.d("MapActivity", "Items cargados de dataeuskadi: " + items.toString());
                     displayDataOnMap(items);
                 }
 
@@ -131,71 +159,71 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void addMarkerForIncident(DataItem incident) {
-        // Implementa la lógica para agregar marcadores en el mapa
         try {
-            // Obtener el origen de los datos de la incidencia
             String origin = incident.getOrigin();
-
-            // Variables para almacenar latitud, longitud y descripción de la incidencia
+            String tipo = incident.getType(); // Asegúrate de que tienes un método getType() en DataItem o ajusta según tu implementación
             String latitud;
             String longitud;
             String descripcion;
 
-            // Obtener los valores de latitud, longitud y descripción según el origen de los datos
-            if ("myAPI".equals(origin)) {
-                latitud = incident.getValueFromJson("latitud");
-                longitud = incident.getValueFromJson("longitud");
-                descripcion = incident.getValueFromJson("causa");
+            if ("myApi".equals(origin)) {
+                latitud = incident.getValueFromJson("LATITUD");
+                longitud = incident.getValueFromJson("LONGITUD");
+                descripcion = tipo.equals("camara") ? incident.getValueFromJson("NOMBRE") : incident.getValueFromJson("CAUSA");
             } else if ("openDataEuskadi".equals(origin)) {
                 latitud = incident.getValueFromJson("latitude");
                 longitud = incident.getValueFromJson("longitude");
-                descripcion = incident.getValueFromJson("cause");
+                descripcion = tipo.equals("camara") ? incident.getValueFromJson("cameraName") : incident.getValueFromJson("cause");
             } else {
-                // Manejar cualquier otro origen de datos
                 latitud = "";
                 longitud = "";
-                descripcion = "";
+                descripcion = "Información no disponible";
             }
 
-            // Convertir a double solo si las cadenas no están vacías y no son nulas
             if (latitud != null && !latitud.isEmpty() && longitud != null && !longitud.isEmpty()) {
                 double lat = Double.parseDouble(latitud);
                 double lng = Double.parseDouble(longitud);
+                String markerTitle = !descripcion.isEmpty() ? descripcion : "Descripción no disponible";
 
-                // Verificar si la descripción es nula o está vacía, y proporcionar un valor predeterminado en ese caso
-                String markerTitle = (descripcion != null && !descripcion.isEmpty()) ? descripcion : "Descripción no disponible";
+                int imageResId = getImageResource(origin, tipo); // Utiliza una función para determinar el recurso de imagen basado en el origen y tipo
 
-                // Definir el recurso de imagen según el origen de los datos
-                int imageResId;
-                if ("myAPI".equals(origin)) {
-                    imageResId = R.drawable.ping_api1;
-                } else if ("openDataEuskadi".equals(origin)) {
-                    imageResId = R.drawable.ping_api2;
-                } else {
-                    // Definir un recurso de imagen predeterminado si el origen no coincide con ninguno conocido
-                    imageResId = R.drawable.googlemaps;
-                }
-
-                // Crear un bitmap a partir del recurso de imagen
                 Bitmap iconBitmap = BitmapFactory.decodeResource(getResources(), imageResId);
-
-                // Escalar el bitmap al tamaño deseado (50x50 píxeles)
                 Bitmap scaledBitmap = Bitmap.createScaledBitmap(iconBitmap, 50, 50, false);
-
-                // Crear un descriptor de icono a partir del bitmap escalado
                 BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(scaledBitmap);
 
-                // Agregar el marcador al mapa con la posición, título y icono
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(lat, lng))
                         .title(markerTitle + " - " + origin)
                         .icon(icon));
             }
         } catch (NumberFormatException e) {
-            // Manejar la excepción en caso de que la conversión de String a double falle
             e.printStackTrace();
         }
     }
+
+    private int getImageResource(String origin, String tipo) {
+        // Primero, maneja el caso para "incidencias"
+        if ("incidencia".equals(tipo)) {
+            if ("myApi".equals(origin)) {
+                return R.drawable.ping_api1; // Ícono específico para incidencias de myApi
+            } else if ("openDataEuskadi".equals(origin)) {
+                return R.drawable.ping_api2; // Ícono diferente para incidencias de OpenDataEuskadi
+            }
+        }
+
+        // Luego, maneja el caso para "cámaras"
+        if ("camara".equals(tipo)) {
+            // Asume que quieres usar el mismo ícono para cámaras, independientemente del origen
+            return R.drawable.ic_camera; // Ícono para cámaras
+        }
+
+        // Aquí puedes añadir más casos para otros tipos si es necesario
+
+        // Finalmente, devuelve un ícono por defecto si no se cumple ninguna de las condiciones anteriores
+        return R.drawable.googlemaps; // Ícono por defecto
+    }
+
+
 
 
 
