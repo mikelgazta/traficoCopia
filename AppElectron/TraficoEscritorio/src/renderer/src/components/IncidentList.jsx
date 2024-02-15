@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../assets/IncidentList.css';
 import useToken from '../Store/useStore'; // Importa el store
 
@@ -13,16 +14,24 @@ function App() {
   useEffect(() => {
     const fetchIncidents = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/listaIncidencias', {
-          headers: {
-            Authorization: `${token}`,
-          },
-        });
-        setIncidents(response.data);
+        const headers = {
+          'Authorization': `${token}`,
+          'Content-Type': 'application/json',
+        };
+        const response = await fetch('http://127.0.0.1:8000/api/listaIncidencias', { headers });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setIncidents(data);
       } catch (error) {
         console.error('Error al obtener las incidencias:', error);
       }
     };
+    console.log("Token: "+token);
 
     if (token) {
       fetchIncidents();
@@ -31,7 +40,7 @@ function App() {
   //}, []);
   const handleEdit = (incident) => {
     navigate('/crearIncidencia', { state: { incident } });
-};
+  };
 
   return (
     <div className="incidentList">

@@ -16,7 +16,7 @@ function CameraList() {
                     'Content-Type': 'application/json',
                 };
 
-                const response = await fetch('http://127.0.0.1:8080/api/verCamaras', { headers });
+                const response = await fetch('http://127.0.0.1:8000/api/verCamaras', { headers });
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
