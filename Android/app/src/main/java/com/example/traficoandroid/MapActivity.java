@@ -25,7 +25,7 @@ import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private static final int REQUEST_ADD_INCIDENT = 1;
+    public static final int REQUEST_ADD_INCIDENT = 1;
 
     private GoogleMap mMap;
     private IncidenciasDatamanager dataManager;
@@ -72,15 +72,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ADD_INCIDENT && resultCode == RESULT_OK && data != null) {
-            // Obtener la nueva incidencia creada desde AddIncidentActivity
             String jsonNuevaIncidencia = data.getStringExtra("nuevaIncidencia");
             Gson gson = new Gson();
             DataItem nuevaIncidencia = gson.fromJson(jsonNuevaIncidencia, DataItem.class);
 
             // Agregar un marcador para la nueva incidencia en el mapa
             addMarkerForIncident(nuevaIncidencia);
+            loadDataAndDisplayMarkers();
         }
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -222,11 +223,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Finalmente, devuelve un ícono por defecto si no se cumple ninguna de las condiciones anteriores
         return R.drawable.googlemaps; // Ícono por defecto
     }
-
-
-
-
-
 }
 
 

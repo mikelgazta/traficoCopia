@@ -2,6 +2,7 @@ package com.example.traficoandroid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -100,6 +101,9 @@ public class RegistroActivity extends AppCompatActivity {
     }
 
     private void sendWelcomeEmail(String email) {
+        // Log para iniciar el proceso de envío
+        Log.d("SendEmail", "Iniciando el envío del correo de bienvenida a: " + email);
+
         // Crear la solicitud para enviar el correo
         CorreoRequest correoRequest = new CorreoRequest();
         correoRequest.setDestinatario(email);
@@ -118,20 +122,22 @@ public class RegistroActivity extends AppCompatActivity {
         client.newCall(requestM).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.e("SendEmail", "Error al enviar el correo de bienvenida", e);
                 showAlert("Error al enviar el correo de bienvenida", e.getMessage());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
+                    Log.d("SendEmail", "Correo de bienvenida enviado exitosamente a: " + email);
                     showAlert("Correo enviado", "Se ha enviado un correo de bienvenida al usuario.");
                 } else {
+                    Log.e("SendEmail", "Error al enviar el correo de bienvenida. Código de respuesta: " + response.code());
                     showAlert("Error al enviar el correo de bienvenida", "No se pudo enviar el correo de bienvenida.");
                 }
             }
         });
     }
-
 
 
 

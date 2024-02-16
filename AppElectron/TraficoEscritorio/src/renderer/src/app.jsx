@@ -6,43 +6,37 @@ function App() {
   const { token, error, setToken, setError } = useStore(); // Obtiene el estado y las funciones
 
   useEffect(() => {
-    iniciarSesionAutomatico();
-  }, []);
+    const iniciarSesionAutomatico = async () => {
+      try {
+        const credenciales = {
+          email: 'ikccy@plaiaundi.net',
+          password: '123456',
+        };
 
-  const iniciarSesionAutomatico = async () => {
-    try {
-      const data = await iniciarSesion();
-      setToken(data);
-      setError('');
-    } catch (error) {
-      handleLoginError(error);
-    }
-  };
+        const response = await fetch('http://127.0.0.1:8000/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(credenciales),
+        });
 
-  const iniciarSesion = async () => {
-    const credenciales = {
-      email: 'mikelgazta@plaiaundi.com',
-      contrasena: '123456',
+        if (response.ok) {
+          const responseData = await response.json(); // Parsea la respuesta JSON
+          const token = responseData.user.TOKEN; // Extrae el token del objeto JSON
+          setToken(token); // Actualiza el token en el store
+          setError('');
+        }else {
+          setError('Las credenciales son incorrectas.');
+        }
+      } catch (error) {
+        setError('Error al iniciar sesión.' + error);
+      }
     };
 
-    const response = await fetch('http://127.0.0.1:8000/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(credenciales),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Las credenciales son incorrectas.');
-    }
-    return await response.text();
-  };
+    iniciarSesionAutomatico(); // Llama a la función dentro del useEffect
 
-  const handleLoginError = (error) => {
-    console.error('Error al iniciar sesión:', error);
-    setError('Error al iniciar sesión: ' + error.message);
-  };
+  }, []); // El arreglo vacío indica que este efecto se ejecutará solo una vez al montar el componente
 
   return (
     <div>

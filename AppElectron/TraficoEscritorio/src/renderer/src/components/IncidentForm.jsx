@@ -87,30 +87,34 @@ function IncidentForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = isEditing ? 'PUT' : 'POST';
-    const url = `http://127.0.0.1:8000/api/incidencias/${isEditing ? incident.id : ''}`;
-
+    const url = isEditing ? `http://127.0.0.1:8000/api/incidencias/${incident.id}` : 'http://127.0.0.1:8000/api/incidencias';
+  
     try {
       const response = await fetch(url, {
         method: method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `${token}` // Asegúrate de que el token es correcto
+          'Authorization': `Bearer ${token}` // Asegúrate de incluir el prefijo 'Bearer' antes del token
         },
         body: JSON.stringify(incident)
       });
-
+  
+      const responseData = await response.json(); // Parsea la respuesta como JSON
+  
       if (response.ok) {
         // Procesar respuesta
-        if (!isEditing)
+        if (!isEditing) {
+          // Limpiar el formulario o hacer alguna otra acción después de crear la incidencia
           setIncident(initialState);
+        }
       } else {
-        console.error('Error en la respuesta del servidor:', response.status);
+        console.error('Error en la respuesta del servidor:', responseData); // Loguea el mensaje de error
       }
     } catch (error) {
       console.error('Error al enviar el formulario:', error);
     }
   };
-
+  
   const handleDelete = async () => {
     if (isEditing) {
       try {
@@ -118,21 +122,24 @@ function IncidentForm() {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `${token}`
+            'Authorization': `Bearer ${token}`
           }
         });
-
+  
+        const responseData = await response.json(); // Parsea la respuesta como JSON
+  
         if (response.ok) {
           // Procesar respuesta
           setIncident(initialState);
         } else {
-          console.error('Error en la respuesta del servidor:', response.status);
+          console.error('Error en la respuesta del servidor:', responseData); // Loguea el mensaje de error
         }
       } catch (error) {
         console.error('Error al intentar borrar:', error);
       }
     }
   };
+  
 
   return (
     <div className="incident-form">

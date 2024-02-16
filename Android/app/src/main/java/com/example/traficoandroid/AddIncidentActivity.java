@@ -1,5 +1,7 @@
 package com.example.traficoandroid;
 
+import static com.example.traficoandroid.MapActivity.REQUEST_ADD_INCIDENT;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -84,7 +87,7 @@ public class AddIncidentActivity extends AppCompatActivity {
     }
 
     private void enviarDatos() {
-        // Obtener valores de los campos de texto
+        // Obtener valores de los campos de texto y spinner
         String tipo = tipoSpinner.getSelectedItem().toString();
         String causa = causaEditText.getText().toString();
         String comienzo = comienzoEditText.getText().toString();
@@ -92,7 +95,7 @@ public class AddIncidentActivity extends AppCompatActivity {
         String carretera = carreteraEditText.getText().toString();
         String direccion = direccionEditText.getText().toString();
 
-        // Construir el objeto JSON con los datos
+        // Construir el objeto JSON
         JsonObject incidenteJson = new JsonObject();
         incidenteJson.addProperty("TIPO", tipo);
         incidenteJson.addProperty("CAUSA", causa);
@@ -104,85 +107,44 @@ public class AddIncidentActivity extends AppCompatActivity {
         incidenteJson.addProperty("LONGITUD", longitude);
         incidenteJson.addProperty("USUARIO", "mikelgazta@gmail.com");
 
-        // Convertir el JSON a una cadena
         String jsonBody = incidenteJson.toString();
 
-        // Realizar la solicitud HTTP con OkHttp
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(jsonBody, MediaType.parse("application/json; charset=utf-8"));
-
-        // Obtener el token de autenticación del intent
-        String jwtToken = getIntent().getStringExtra("token");
 
         Request request = new Request.Builder()
                 .url("http://10.0.2.2:8000/api/crearIncidencia")
                 .post(body)
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", jwtToken) // Agregar el token de autenticación
+                .addHeader("Authorization", token) // Utilizar el token obtenido previamente
                 .build();
-
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                // Manejar el fallo, por ejemplo, mostrar un mensaje al usuario
-                runOnUiThread(() -> {
-                    Toast.makeText(AddIncidentActivity.this, "Error al registrar la incidencia", Toast.LENGTH_SHORT).show();
-                });
+                runOnUiThread(() -> Toast.makeText(AddIncidentActivity.this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String responseBody = response.body().string();
                 if (response.isSuccessful()) {
-                    // La solicitud fue exitosa
-                    // Obtener información de la nueva incidencia creada
-                    String jsonResponse = response.body().string();
-                    Log.d("ServerResponse", "Response: " + jsonResponse); // Agrega este registro
-
-                    Gson gson = new Gson();
-
-                    // Parsear el JSON usando Gson y JsonParser para manejar JSON mal formado
-                    JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-
-                    // Obtener campos del JSON y crear un nuevo objeto DataItem
-                    String tipo = jsonObject.get("TIPO").getAsString();
-                    String causa = jsonObject.get("CAUSA").getAsString();
-                    String comienzo = jsonObject.get("COMIENZO").getAsString();
-                    String nivelIncidencia = jsonObject.get("NVL_INCIDENCIA").getAsString();
-                    String carretera = jsonObject.get("CARRETERA").getAsString();
-                    String direccion = jsonObject.get("DIRECCION").getAsString();
-                    double latitud = jsonObject.get("LATITUD").getAsDouble();
-                    double longitud = jsonObject.get("LONGITUD").getAsDouble();
-                    String usuario = jsonObject.get("USUARIO").getAsString();
-                    int id = jsonObject.get("ID").getAsInt(); // Nuevo campo ID
-
-                    // Crear un nuevo objeto DataItem con los campos obtenidos
-                    DataItem nuevaIncidencia = new DataItem("myApi", "incidencia", createJsonString(tipo, causa, comienzo, nivelIncidencia, carretera, direccion, latitud, longitud, usuario));
-
-                    // Convertir el objeto DataItem a una cadena JSON
-                    String jsonNuevaIncidencia = gson.toJson(nuevaIncidencia);
-
-                    // Crear un intent para pasar la información de vuelta a MapActivity
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("nuevaIncidencia", jsonNuevaIncidencia);
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
-                } else {
-                    // La solicitud no fue exitosa
                     runOnUiThread(() -> {
-                        try {
-                            String errorMessage = response.body().string();
-                            Log.e("ServerResponse", "Error response: " + errorMessage); // Agrega este registro
-                            Toast.makeText(AddIncidentActivity.this, "Error al registrar la incidencia: " + errorMessage, Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        Intent returnIntent = new Intent();
+                        // Si DataItem implementa Serializable, de lo contrario conviértelo a JSON
+                        // returnIntent.putExtra("dataItem", item); // Directamente si es serializable
+                        returnIntent.putExtra("nuevaIncidencia", responseBody); // Si usas JSON
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
                     });
+                } else {
+                    runOnUiThread(() -> Toast.makeText(AddIncidentActivity.this, "Error al registrar la incidencia: " + responseBody, Toast.LENGTH_SHORT).show());
                 }
             }
+
         });
     }
+
 
     // Método para crear una cadena JSON a partir de los valores dados
     private String createJsonString(String tipo, String causa, String comienzo, String nivelIncidencia, String carretera, String direccion, double latitud, double longitud, String usuario) {
@@ -199,3 +161,4 @@ public class AddIncidentActivity extends AppCompatActivity {
         return jsonObject.toString();
     }
 }
+

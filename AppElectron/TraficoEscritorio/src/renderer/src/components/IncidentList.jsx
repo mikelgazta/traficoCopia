@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import '../assets/IncidentList.css';
 import useToken from '../Store/useStore'; // Importa el store
 
@@ -9,17 +8,17 @@ function App() {
   const [incidents, setIncidents] = useState([]);
   const { token } = useToken();
 
-
+  console.log("IncidentListToken: " + token);
   // Llamada a la API para obtener las incidencias
   useEffect(() => {
     const fetchIncidents = async () => {
       try {
         const headers = {
-          'Authorization': `${token}`,
-          'Content-Type': 'application/json',
+          'Authorization': token, // Aquí no incluyas el prefijo "Bearer"
         };
-        const response = await fetch('http://127.0.0.1:8000/api/listaIncidencias', { headers });
+        const response = await fetch('http://127.0.0.1:8000/api/listaIncidencias', { headers: headers });
 
+        console.log(headers);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -31,13 +30,13 @@ function App() {
         console.error('Error al obtener las incidencias:', error);
       }
     };
-    console.log("Token: "+token);
+    console.log("Token: " + token);
 
     if (token) {
       fetchIncidents();
     }
-  }, [token]); // Se ejecuta cuando el token cambia
-  //}, []);
+  }, [token]);
+  // Se ejecuta cuando el token cambia
   const handleEdit = (incident) => {
     navigate('/crearIncidencia', { state: { incident } });
   };
@@ -45,14 +44,15 @@ function App() {
   return (
     <div className="incidentList">
       <h2>Modificar Incidencias</h2>
-      {incidents.length > 0 ? incidents.map((incident) => (
-        <div key={incident.id.string} className="incidentItem" onClick={() => handleEdit(incident)}>
-          <p>{incident.tipo.string}</p>
-          <p>{incident.causa.string}</p>
-          <p>{incident.latitud.string}</p>
-          <p>{incident.longitud.string}</p>
+      {incidents.length > 0 ? incidents.map((incident, index) => (
+        <div key={index} className="incidentItem" onClick={() => handleEdit(incident)}>
+          <p>Tipo: {incident.TIPO}</p>
+          <p>Causa: {incident.CAUSA}</p>
+          <p>Latitud: {incident.LATITUD}</p>
+          <p>Longitud: {incident.LONGITUD}</p>
         </div>
       )) : <p>No hay incidencias para mostrar.</p>}
+
     </div>
   );
 }
