@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -66,6 +69,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 startActivityForResult(intent, REQUEST_ADD_INCIDENT);
             });
         });
+/*
+
+
+ */
     }
 
     @Override
@@ -89,6 +96,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // Cargar datos y mostrar marcadores en el mapa
         loadDataAndDisplayMarkers();
+        // Configurar el listener de clic en el botón verCamaras
+        Button verCamarasButton = findViewById(R.id.verCamaras);
+            verCamarasButton.setOnClickListener(view -> {
+                camarasDataManager.loadOpenDataEuskadiCameras()
+                        .thenAcceptAsync(camaras -> {
+                            Log.d("MapActivity", "Cámaras de OpenData Euskadi cargadas: " + camaras.toString());
+
+                            // Pasar las cámaras a la actividad ListaCamarasActivity
+                            Intent intent = new Intent(MapActivity.this, ListaCamarasActivity.class);
+                            intent.putExtra("jwtToken", jwtToken); // Pasar el token como extra
+                            // Asegúrate de que DataItem implementa Serializable o Parcelable
+                            intent.putExtra("camaras", (Serializable) camaras); // Pasar la lista de cámaras como extra
+                            startActivity(intent);
+
+                            // Puede reutilizar el método para mostrar las cámaras en el mapa
+                            displayDataOnMap(camaras);
+                        }, this::runOnUiThread)
+                        .exceptionally(e -> {
+                            Log.e("MapActivity", "Error loading OpenData Euskadi cameras", e);
+                            return null;
+                        });
+        });
+
     }
 
     private void loadDataAndDisplayMarkers() {

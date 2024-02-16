@@ -42,7 +42,7 @@
             android:name=".AddIncidentActivity"
             android:exported="false" />
         <activity
-            android:name=".CamarasActivity"
+            android:name=".ListaCamarasActivity"
             android:exported="false" />
     </application>
 

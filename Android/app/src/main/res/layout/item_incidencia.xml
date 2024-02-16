@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tituloIncidenciaTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Título de la Incidencia" />
+
+            <TextView
+                android:id="@+id/descripcionIncidenciaTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="14sp"
+                android:text="Descripción de la Incidencia" />
+
+            <!-- Aquí puedes agregar más vistas según sea necesario para mostrar la información de la incidencia -->
+        </LinearLayout>
+
+        <!-- Icono de estrella para marcar como favorito -->
+        <ImageView
+            android:id="@+id/iconoEstrellaIncidencia"
+            android:layout_width="60dp"
+            android:layout_height="43dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_empty_star" /> <!-- Asume que tienes un drawable ic_star_outline para estrella no marcada -->
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

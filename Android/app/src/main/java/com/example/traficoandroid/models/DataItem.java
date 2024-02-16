@@ -4,7 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class DataItem {
+import java.io.Serializable;
+
+public class DataItem implements Serializable {
     private String origin; // Origen del dato (por ejemplo, "myAPI" o "openDataEuskadi")
     private String type; // Tipo del dato (por ejemplo, "incidencia", "camara" o "flujo")
     private String json; // Representación en formato JSON del dato
