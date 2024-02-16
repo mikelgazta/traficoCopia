@@ -38,8 +38,9 @@ function App() {
   }, [token]);
   // Se ejecuta cuando el token cambia
   const handleEdit = (incident) => {
-    navigate('/crearIncidencia', { state: { incident } });
+    navigate(`/incidencias/editar/${incident.id}`);
   };
+  
 
   return (
     <div className="incidentList">

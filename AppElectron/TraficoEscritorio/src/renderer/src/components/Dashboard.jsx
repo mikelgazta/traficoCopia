@@ -37,6 +37,7 @@ function Dashboard() {
                     <Navbar />
                     <Routes>
                         <Route path="/incidencias" element={<IncidentForm />} />
+                        <Route path="/incidencias/editar/:id" element={<IncidentForm />} />
                         <Route path="/camaras" element={<CameraForm />} />
                         <Route path="/:section/:action" element={<DynamicForm />} />
                         <Route path="/:section/:action/:id" element={<DynamicForm />} />

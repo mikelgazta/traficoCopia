@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import '../assets/IncidentForm.css';
 import useToken from '../Store/useStore'; // Importa el store
 
@@ -29,17 +29,19 @@ function IncidentForm() {
   const location = useLocation();
   const isEditing = location.state && location.state.incident;
   const { token } = useToken();
+  const { id } = useParams();
 
   const initialState = {
-    tipo: '',
-    causa: '',
-    comienzo: '',
-    nivel_incidencia: '',
-    carretera: '',
-    direccion: '',
-    latitud: '',
-    longitud: '',
-    usuario: 'mikelgazta@plaiaundi.com'
+    id:'',
+    TIPO: '', // Asegúrate de que todos los campos estén inicializados
+    CAUSA: '',
+    COMIENZO: '',
+    NVL_INCIDENCIA: '',
+    CARRETERA: '',
+    DIRECCION: '',
+    LATITUD: '',
+    LONGITUD: '',
+    USUARIO: 'mikelgazta@plaiaundi.com'
   };
 
 
@@ -87,149 +89,157 @@ function IncidentForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = isEditing ? 'PUT' : 'POST';
-    const url = isEditing ? `http://127.0.0.1:8000/api/incidencias/${incident.id}` : 'http://127.0.0.1:8000/api/incidencias';
+    const url = isEditing
+      ? `http://127.0.0.1:8000/api/incidencias/${incident.id}`
+      : 'http://127.0.0.1:8000/api/crearIncidencia';
   
     try {
       const response = await fetch(url, {
         method: method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Asegúrate de incluir el prefijo 'Bearer' antes del token
+          'Authorization': token,
         },
-        body: JSON.stringify(incident)
+        body: JSON.stringify(incident),
       });
   
-      const responseData = await response.json(); // Parsea la respuesta como JSON
+      const responseData = await response.json();
   
       if (response.ok) {
-        // Procesar respuesta
         if (!isEditing) {
-          // Limpiar el formulario o hacer alguna otra acción después de crear la incidencia
-          setIncident(initialState);
+          // Si la creación fue exitosa, actualiza el estado con la nueva incidencia, incluyendo su id
+          setIncident({ ...incident, id: responseData.id });
+        } else {
+          // Procesar actualización de la incidencia aquí
         }
       } else {
-        console.error('Error en la respuesta del servidor:', responseData); // Loguea el mensaje de error
+        console.error('Error en la respuesta del servidor:', responseData);
       }
     } catch (error) {
       console.error('Error al enviar el formulario:', error);
     }
   };
   
-  const handleDelete = async () => {
-    if (isEditing) {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/incidencias/${incident.id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
   
-        const responseData = await response.json(); // Parsea la respuesta como JSON
-  
-        if (response.ok) {
-          // Procesar respuesta
-          setIncident(initialState);
-        } else {
-          console.error('Error en la respuesta del servidor:', responseData); // Loguea el mensaje de error
-        }
-      } catch (error) {
-        console.error('Error al intentar borrar:', error);
-      }
-    }
-  };
   
 
-  return (
-    <div className="incident-form">
-      <h1 className='incidencia-text'>Incidencias</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Tipo</label>
-          <input
-            type="text"
-            name="tipo"
-            value={incident.tipo}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Causa</label>
-          <input
-            type="text"
-            name="causa"
-            value={incident.causa}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Fecha de Comienzo</label>
-          <input
-            type="date"
-            name="comienzo"
-            value={incident.comienzo}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Nivel de Incidencia</label>
-          <input
-            type="text"
-            name="nivel_incidencia"
-            value={incident.nivel_incidencia}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Carretera</label>
-          <input
-            type="text"
-            name="carretera"
-            value={incident.carretera}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Direccion</label>
-          <input
-            type="text"
-            name="direccion"
-            value={incident.direccion}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Latitud</label>
-          <input
-            type="text"
-            name="latitud"
-            value={incident.latitud}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Longitud</label>
-          <input
-            type="text"
-            name="longitud"
-            value={incident.longitud}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-actions">
-          {isEditing && (
-            <button type="button" onClick={handleDelete}>
-              Borrar
-            </button>
-          )}
-          <button type="submit" className="submit-button">
-            {isEditing ? 'Actualizar' : 'Crear'}
+const handleDelete = async () => {
+  if (isEditing) {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/incidencias/${incident.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      });
+
+      const responseData = await response.json(); // Parsea la respuesta como JSON
+
+      if (response.ok) {
+        // Procesar respuesta
+        setIncident(initialState);
+      } else {
+        console.error('Error en la respuesta del servidor:', responseData); // Loguea el mensaje de error
+      }
+    } catch (error) {
+      console.error('Error al intentar borrar:', error);
+    }
+  }
+};
+
+
+return (
+  <div className="incident-form">
+    <h1 className='incidencia-text'>Incidencias</h1>
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label>Tipo</label>
+        <input
+          type="text"
+          name="TIPO" // Cambiado para coincidir con la API
+          value={incident.TIPO} // Asegúrate de ajustar también el estado
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Causa</label>
+        <input
+          type="text"
+          name="CAUSA" // Cambiado para coincidir con la API
+          value={incident.CAUSA} // Ajusta el estado
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Fecha de Comienzo</label>
+        <input
+          type="date"
+          name="COMIENZO" // Cambiado para coincidir con la API
+          value={incident.COMIENZO} // Ajusta el estado
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Nivel de Incidencia</label>
+        <input
+          type="text"
+          name="NVL_INCIDENCIA" // Cambiado para coincidir con la API
+          value={incident.NVL_INCIDENCIA} // Ajusta el estado
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Carretera</label>
+        <input
+          type="text"
+          name="CARRETERA" // Cambiado para coincidir con la API
+          value={incident.CARRETERA} // Ajusta el estado
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Direccion</label>
+        <input
+          type="text"
+          name="DIRECCION" // Cambiado para coincidir con la API
+          value={incident.DIRECCION} // Ajusta el estado
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Latitud</label>
+        <input
+          type="text"
+          name="LATITUD" // Cambiado para coincidir con la API
+          value={incident.LATITUD} // Ajusta el estado
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-group">
+        <label>Longitud</label>
+        <input
+          type="text"
+          name="LONGITUD" // Cambiado para coincidir con la API
+          value={incident.LONGITUD} // Ajusta el estado
+          onChange={handleChange}
+        />
+      </div>
+      {/* Asegúrate de manejar el campo 'USUARIO' si es necesario */}
+      <div className="form-actions">
+        {isEditing && (
+          <button type="button" onClick={handleDelete}>
+            Borrar
           </button>
-        </div>
-      </form>
-    </div>
-  );
+        )}
+        <button type="submit" className="submit-button">
+          {isEditing ? 'Actualizar' : 'Crear'}
+        </button>
+      </div>
+    </form>
+  </div>
+);
+
 
 }
 
